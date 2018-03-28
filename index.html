@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="node_modules/three/build/three.js"></script>
+		<script>
+			var camera, scene, renderer;
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color(0x181817);
+			camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 5000 );
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			var spriteMap = new THREE.TextureLoader().load(
+				"assets/img/train.jpg",
+				() => {sprite.scale.set(spriteMap.image.width, spriteMap.image.height, 1)}
+			);
+			var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
+			var sprite = new THREE.Sprite( spriteMaterial );
+			scene.add( sprite );
+			camera.lookAt( sprite.position );
+			console.log(camera.position);
+
+			const animate = () => {
+				requestAnimationFrame(animate);
+				renderer.render(scene, camera);
+			};
+			animate();
+		</script>
+	</body>
+</html>
