@@ -11,27 +11,25 @@
 	<body>
 		<script src="node_modules/three/build/three.js"></script>
 		<script>
-			var camera, scene, renderer;
-			scene = new THREE.Scene();
+			const scene = new THREE.Scene();
 			scene.background = new THREE.Color(0x181817);
-			camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 5000 );
-			renderer = new THREE.WebGLRenderer();
+			const camera = new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 1, 1000 );
+			const renderer = new THREE.WebGLRenderer();
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
 
-			var spriteMap = new THREE.TextureLoader().load(
-				"assets/img/train.jpg",
-				() => {sprite.scale.set(spriteMap.image.width, spriteMap.image.height, 1)}
-			);
-			var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
-			var sprite = new THREE.Sprite( spriteMaterial );
-			scene.add( sprite );
-			camera.lookAt( sprite.position );
-			console.log(camera.position);
+			const spriteMap = new THREE.TextureLoader().load( './assets/img/pepper.jpg' );
+			const spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
+			for (let i = 0; i < 1000; i++) {
+				const testSprite = new THREE.Sprite( spriteMaterial );
+				testSprite.position.set(Math.random()*100-50, Math.random()*100-50, Math.random()*100-50)
+				scene.add(testSprite);
+			}
 
 			const animate = () => {
 				requestAnimationFrame(animate);
 				renderer.render(scene, camera);
+				camera.rotation.y += 0.0002;
 			};
 			animate();
 		</script>
