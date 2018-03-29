@@ -49,21 +49,18 @@ renderer.domElement.addEventListener('click', (event) => {
     // camera.lookAt(intersected.object.position); //turn the camera to capture endRotation
     // const end_rot = new THREE.Euler().copy(camera.rotation);
     // camera.lookAt(cam_pos); //turn the camera back 笑
-    // make_rot_tween = () => {
-    //   const rot_tween = new TWEEN.Tween(start_rot).to(end_rot, 1000)
-    //     .easing(TWEEN.Easing.Cubic.InOut)
-    //     .onUpdate(() => {
-    //       camera.setRotationFromEuler(start_rot);
-    //       camera.updateProjectionMatrix();
-    //       console.log(camera.rotation);
-    //       console.log(start_rot);
-    //     })
-    //     .start();
-    //
-    // }
-    // make_rot_tween();
-    camera.quaternion.slerp(targetQuaternion,t);
 
+    const targetQuaternion = new THREE.Quaternion().copy(intersected.object.quaternion);
+    make_rot_tween = () => {
+      const o = {t:0};
+      const rot_tween = new TWEEN.Tween(o).to({t:1}, 1000)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .onUpdate(() => {
+          camera.quaternion.slerp(targetQuaternion, o.t);
+        })
+        .start();
+      }
+      make_rot_tween();
   }
 });
 
