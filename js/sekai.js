@@ -42,6 +42,7 @@ renderer.domElement.addEventListener('mousedown', (event) => {
         .easing(TWEEN.Easing.Cubic.InOut);
       tween.start();
     }
+    //user Quaternion.slerp();
     make_tween();
   }
 });
