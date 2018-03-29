@@ -27,23 +27,43 @@ window.addEventListener('mousemove', (event) => {
   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 });
-renderer.domElement.addEventListener('mousedown', (event) => {
+renderer.domElement.addEventListener('click', (event) => {
   controls.movementSpeed = 0;
   controls.rollSpeed = 0;
   if (intersected) {
-    camera.lookAt(intersected.object.position);
-    make_tween = () => {
-      const start_pos = camera.position;
-      const dist_vec = new THREE.Vector3()
-        .subVectors(intersected.object.position, camera.position);
-      const view_pos = new THREE.Vector3().copy(dist_vec).normalize().multiplyScalar(3);
-      const end_pos = new THREE.Vector3().subVectors(dist_vec, view_pos);
-      const tween = new TWEEN.Tween(start_pos).to(end_pos, 1000)
-        .easing(TWEEN.Easing.Cubic.InOut);
-      tween.start();
+
+    //Position animation
+    const dist_vec = new THREE.Vector3()
+      .subVectors(intersected.object.position, camera.position);
+    const view_pos = new THREE.Vector3().copy(dist_vec).normalize().multiplyScalar(3);
+    const end_pos = new THREE.Vector3().subVectors(dist_vec, view_pos);
+    make_pos_tween = () => {
+      const pos_tween = new TWEEN.Tween(camera.position).to(end_pos, 1000)
+        .easing(TWEEN.Easing.Cubic.InOut).start();
     }
-    //user Quaternion.slerp();
-    make_tween();
+    make_pos_tween();
+
+    //Rotation animation
+    // const cam_pos = camera.position;
+    // const start_rot = new THREE.Euler().copy(camera.rotation);
+    // camera.lookAt(intersected.object.position); //turn the camera to capture endRotation
+    // const end_rot = new THREE.Euler().copy(camera.rotation);
+    // camera.lookAt(cam_pos); //turn the camera back 笑
+    // make_rot_tween = () => {
+    //   const rot_tween = new TWEEN.Tween(start_rot).to(end_rot, 1000)
+    //     .easing(TWEEN.Easing.Cubic.InOut)
+    //     .onUpdate(() => {
+    //       camera.setRotationFromEuler(start_rot);
+    //       camera.updateProjectionMatrix();
+    //       console.log(camera.rotation);
+    //       console.log(start_rot);
+    //     })
+    //     .start();
+    //
+    // }
+    // make_rot_tween();
+    camera.quaternion.slerp(targetQuaternion,t);
+
   }
 });
 
@@ -60,7 +80,6 @@ const spriteMaps = subwayImgNames.map((item) => new THREE.TextureLoader()
 for (let i = 0; i < 3000; i++) {
   const spriteMaterial = new THREE.SpriteMaterial({
     map: spriteMaps[i % spriteMaps.length],
-    // map: new THREE.TextureLoader().load('./assets/random/train.jpg'),
     fog: true
   });
   const testSprite = new THREE.Sprite(spriteMaterial);
