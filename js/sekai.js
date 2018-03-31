@@ -1,26 +1,28 @@
 const container = document.createElement( 'div' );
 document.body.appendChild( container );
 
-//Scene
+// Scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x181817);
-scene.fog = new THREE.FogExp2(scene.background, 0.02);
+scene.fog = new THREE.Fog(scene.background, 3, 50);
 
-//Camera and camera controls
+// Camera and camera controls
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 3, 1000);
 const clock = new THREE.Clock();
 const controls = new THREE.FlyControls(camera);
 controls.domElement = container;
 controls.movementSpeed = 0;
 controls.rollSpeed = Math.PI / 6;
+let timer;
 
-//Renderer
+// Renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 container.appendChild(renderer.domElement);
 
-//Raycaster
+// Raycaster
 const raycaster = new THREE.Raycaster();
+raycaster.far = 45;
 let intersected; //to be used in render
 const mouse = new THREE.Vector2();
 let isInFocus = false;
@@ -32,17 +34,18 @@ window.addEventListener('mousemove', (event) => {
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 });
 
-renderer.domElement.addEventListener('click', (event) => {
+renderer.domElement.addEventListener('click', event => {
   if (isInFocus){ //user desires to leave focus
     zoom(camOriginalPosition);
     controls.rollSpeed = Math.PI/6;
-    intersected.object.material.opacity = 0.5;
     intersected.object.material.fog = true;
+    intersected.object.material.opacity = 0.5;
     isInFocus = false;
   }else if (intersected){ //user desires to focus on one sprite
     controls.rollSpeed = 0;
-    intersected.object.material.fog = false;
     intersected.object.material.color.set(0xffffff);
+    intersected.object.material.fog = false;
+    intersected.object.material.opacity = 1;
     camOriginalPosition = camera.position.clone();
     camOriginalRotation = camera.quaternion.clone();
     zoom(intersected.object.position);
@@ -87,9 +90,9 @@ const zoom = (tarPos) => {
     .easing(TWEEN.Easing.Quartic.Out);
 
   //Fog animation setup
-  const normalDensity = {density: scene.fog.density};
+  const normalDensity = {density: scene.fog.far};
   const fogTween = new TWEEN.Tween(normalDensity)
-    .to({density: isInFocus ? 0.02 : 0.2}, isInFocus ? 500 : 1000)
+    .to({density: isInFocus ? 50 : 10}, isInFocus ? 500 : 1000)
     .onUpdate(() => scene.fog.density = normalDensity.density)
     .easing(TWEEN.Easing.Quartic.Out);
 
@@ -102,7 +105,23 @@ const zoom = (tarPos) => {
   }).start();
 }
 
-//Creating Sprites
+renderer.domElement.addEventListener('wheel', event => {
+  if (isInFocus) {return;}
+  controls.movementSpeed = 30;
+  controls.moveState.forward = event.wheelDelta > 0 ? 1 : 0;
+  controls.moveState.back = event.wheelDelta < 0 ? 1 : 0;
+  controls.updateMovementVector();
+
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    controls.movementSpeed = 0;
+    controls.moveState.forward = 0;
+    controls.moveState.back = 0;
+    controls.updateMovementVector();
+  }, 200);
+})
+
+// Creating Sprites
 const subwayImgNames = ['american', 'banana_peppers', 'black_forest_ham',
  'black_olives', 'chipotle_southwest', 'cucumbers', 'flatbread', 'green_peppers',
  'italian', 'italian_bmt', 'italian_herbs_and_cheese', 'jalapenos', 'lettuce',
@@ -122,7 +141,7 @@ for (let i = 0; i < 3000; i++) {
   scene.add(testSprite);
 }
 
-//Window adjustment cases
+// Window adjustment cases
 window.addEventListener('resize', event => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
@@ -137,7 +156,7 @@ renderer.domElement.addEventListener('mouseenter', () => {
   }
 });
 
-//Animate and Render
+// Animate and Render
 function animate() {
   requestAnimationFrame(animate);
   render();
@@ -156,7 +175,6 @@ function render() {
     intersected && intersected.object.material.color.set(0xe57373);
   }
   TWEEN.update();
-
   renderer.render(scene, camera);
 }
 
