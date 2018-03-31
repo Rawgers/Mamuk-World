@@ -1,5 +1,5 @@
 // CONSTANTS
-SPRITE_MAX_DIM = 4;
+const SPRITE_MAX_DIM = 4;
 
 const container = document.createElement( 'div' );
 document.body.appendChild( container );
@@ -10,7 +10,7 @@ scene.background = new THREE.Color(0x181817);
 scene.fog = new THREE.Fog(scene.background, 3, 50);
 
 // Camera and camera controls
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 3, 1000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 3, 1000);
 const clock = new THREE.Clock();
 const controls = new THREE.FlyControls(camera);
 controls.domElement = container;
@@ -93,10 +93,10 @@ const zoom = (tarPos) => {
     .easing(TWEEN.Easing.Quartic.Out);
 
   //Fog animation setup
-  const normalDensity = {density: scene.fog.far};
-  const fogTween = new TWEEN.Tween(normalDensity)
-    .to({density: isInFocus ? 50 : 10}, isInFocus ? 500 : 1000)
-    .onUpdate(() => scene.fog.density = normalDensity.density)
+  const normalFar = {far: scene.fog.far};
+  const fogTween = new TWEEN.Tween(normalFar)
+    .to({far: isInFocus ? 50 : 10}, isInFocus ? 500 : 1000)
+    .onUpdate(() => scene.fog.far = normalFar.far)
     .easing(TWEEN.Easing.Quartic.Out);
 
   //Tweening
@@ -133,13 +133,13 @@ renderer.domElement.addEventListener('wheel', event => {
 //  'red_onions', 'spinach', 'sweet_onion', 'sweet_onion_chicken_teriyaki', 'tomatoes',
 //  'tuna', 'turkey_breast', 'vinaigrette', 'vinegar'];
 const pepperNames = ['horizontal_pepper', 'square_pepper', 'vertical_pepper'];
-for (let i = 0; i< 100; i++) {
+for (let i = 0; i < 500; i++) {
   const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
     map: new THREE.TextureLoader().load('./assets/rectangular_peppers/' + pepperNames[i%3] + '.png',
       texture => {
-        maxDim = Math.max(texture.image.height, texture.image.width)
+        const maxDim = Math.max(texture.image.height, texture.image.width);
         maxDim === texture.image.width
-          ? sprite.scale.set(SPRITE_MAX_DIM, SPRITE_MAX_DIM * (texture.image.width / maxDim), 1)
+          ? sprite.scale.set(SPRITE_MAX_DIM, SPRITE_MAX_DIM * (texture.image.height / maxDim), 1)
           : sprite.scale.set(SPRITE_MAX_DIM * (texture.image.width / maxDim), SPRITE_MAX_DIM, 1);
       }),
     fog: true
@@ -147,23 +147,6 @@ for (let i = 0; i< 100; i++) {
   sprite.position.set(Math.random()*100-50, Math.random()*100-50, Math.random()*100-50);
   scene.add(sprite);
 }
-// const spriteMaps = pepperNames.map((item) => new THREE.TextureLoader()
-//   .load('./assets/rectangular_peppers/' + item + '.png', (texture) => {
-//     width = texture.image.width;
-//     height = texture.image.height;
-//     maxDim = Math.max(width, height);
-//   }));
-// for (let i = 0; i < 3000; i++) {
-//   const spriteMaterial = new THREE.SpriteMaterial({
-//     map: spriteMaps[i % spriteMaps.length],
-//     fog: true
-//   });
-//   const testSprite = new THREE.Sprite(spriteMaterial);
-//   maxDim = spriteMaterial.map.image.maxDim;
-//   testSprite.scale.set(maxDim, maxDim, 1);
-//   testSprite.position.set(Math.random()*100-50, Math.random()*100-50, Math.random()*100-50);
-//   scene.add(testSprite);
-// }
 
 // Window adjustment cases
 window.addEventListener('resize', event => {
