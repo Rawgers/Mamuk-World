@@ -58,9 +58,9 @@ const zoom = (isInFocus, tarPos) => {
       ? new THREE.Vector3()
       : new THREE.Vector3().copy(distVec).normalize().multiplyScalar(0.01);
     const endPos = new THREE.Vector3().subVectors(distVec, viewPos);
-
-    const posTween = new TWEEN.Tween(camera.position).to(endPos, 500)
-      .easing(TWEEN.Easing.Cubic.InOut)
+    //Tweening
+    const posTween = new TWEEN.Tween(camera.position).to(endPos, 1000)
+      .easing(TWEEN.Easing.Quartic.Out)
       .start();
   }
   const rotateCamera = (isInFocus, tarPos) => {
@@ -74,9 +74,16 @@ const zoom = (isInFocus, tarPos) => {
       tempCam.lookAt(tarPos);
       destRotation = tempCam.quaternion;
     }
-    THREE.Quaternion.slerp(camera.quaternion, destRotation, qm, 1);
-    qm.normalize();
-    camera.quaternion = qm;
+    //Tweening
+    const time = {t:0}
+    const rotTween = new TWEEN.Tween(time).to({t:1}, 1000)
+      .onUpdate(() => {
+        THREE.Quaternion.slerp(camera.quaternion, destRotation, qm, time.t);
+        qm.normalize();
+        camera.quaternion = qm;
+      })
+      .easing(TWEEN.Easing.Quartic.Out)
+      .start();
   }
   interpolateCamera(isInFocus, tarPos);
   rotateCamera(isInFocus, tarPos);
