@@ -1,3 +1,6 @@
+// CONSTANTS
+SPRITE_MAX_DIM = 4;
+
 const container = document.createElement( 'div' );
 document.body.appendChild( container );
 
@@ -122,24 +125,45 @@ renderer.domElement.addEventListener('wheel', event => {
 })
 
 // Creating Sprites
-const subwayImgNames = ['american', 'banana_peppers', 'black_forest_ham',
- 'black_olives', 'chipotle_southwest', 'cucumbers', 'flatbread', 'green_peppers',
- 'italian', 'italian_bmt', 'italian_herbs_and_cheese', 'jalapenos', 'lettuce',
- 'mayonnaise', 'meatball_marinara', 'monterey_cheddar', 'multi_grain_flatbread',
- 'mustard', 'nine_grain_wheat', 'oil', 'oven_roasted_chicken', 'pickles', 'ranch',
- 'red_onions', 'spinach', 'sweet_onion', 'sweet_onion_chicken_teriyaki', 'tomatoes',
- 'tuna', 'turkey_breast', 'vinaigrette', 'vinegar'];
-const spriteMaps = subwayImgNames.map((item) => new THREE.TextureLoader()
-  .load('./assets/subwaypics/' + item + '.png'));
-for (let i = 0; i < 3000; i++) {
-  const spriteMaterial = new THREE.SpriteMaterial({
-    map: spriteMaps[i % spriteMaps.length],
+// const subwayImgNames = ['american', 'banana_peppers', 'black_forest_ham',
+//  'black_olives', 'chipotle_southwest', 'cucumbers', 'flatbread', 'green_peppers',
+//  'italian', 'italian_bmt', 'italian_herbs_and_cheese', 'jalapenos', 'lettuce',
+//  'mayonnaise', 'meatball_marinara', 'monterey_cheddar', 'multi_grain_flatbread',
+//  'mustard', 'nine_grain_wheat', 'oil', 'oven_roasted_chicken', 'pickles', 'ranch',
+//  'red_onions', 'spinach', 'sweet_onion', 'sweet_onion_chicken_teriyaki', 'tomatoes',
+//  'tuna', 'turkey_breast', 'vinaigrette', 'vinegar'];
+const pepperNames = ['horizontal_pepper', 'square_pepper', 'vertical_pepper'];
+for (let i = 0; i< 100; i++) {
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: new THREE.TextureLoader().load('./assets/rectangular_peppers/' + pepperNames[i%3] + '.png',
+      texture => {
+        maxDim = Math.max(texture.image.height, texture.image.width)
+        maxDim === texture.image.width
+          ? sprite.scale.set(SPRITE_MAX_DIM, SPRITE_MAX_DIM * (texture.image.width / maxDim), 1)
+          : sprite.scale.set(SPRITE_MAX_DIM * (texture.image.width / maxDim), SPRITE_MAX_DIM, 1);
+      }),
     fog: true
-  });
-  const testSprite = new THREE.Sprite(spriteMaterial);
-  testSprite.position.set(Math.random()*100-50, Math.random()*100-50, Math.random()*100-50);
-  scene.add(testSprite);
+  }));
+  sprite.position.set(Math.random()*100-50, Math.random()*100-50, Math.random()*100-50);
+  scene.add(sprite);
 }
+// const spriteMaps = pepperNames.map((item) => new THREE.TextureLoader()
+//   .load('./assets/rectangular_peppers/' + item + '.png', (texture) => {
+//     width = texture.image.width;
+//     height = texture.image.height;
+//     maxDim = Math.max(width, height);
+//   }));
+// for (let i = 0; i < 3000; i++) {
+//   const spriteMaterial = new THREE.SpriteMaterial({
+//     map: spriteMaps[i % spriteMaps.length],
+//     fog: true
+//   });
+//   const testSprite = new THREE.Sprite(spriteMaterial);
+//   maxDim = spriteMaterial.map.image.maxDim;
+//   testSprite.scale.set(maxDim, maxDim, 1);
+//   testSprite.position.set(Math.random()*100-50, Math.random()*100-50, Math.random()*100-50);
+//   scene.add(testSprite);
+// }
 
 // Window adjustment cases
 window.addEventListener('resize', event => {
