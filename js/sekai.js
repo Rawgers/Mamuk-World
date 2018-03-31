@@ -23,38 +23,64 @@ container.appendChild(renderer.domElement);
 const raycaster = new THREE.Raycaster();
 let intersected; //to be used in render
 const mouse = new THREE.Vector2();
+let isInFocus = false;
+let camOriginalPosition;
+let camOriginalRotation;
 window.addEventListener('mousemove', (event) => {
   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 });
 
 renderer.domElement.addEventListener('click', (event) => {
-  controls.movementSpeed = 0;
-  controls.rollSpeed = 0;
-  if (intersected) {
-    // Position animation
-    const dist_vec = new THREE.Vector3()
-      .subVectors(intersected.object.position, camera.position);
-    const view_pos = new THREE.Vector3().copy(dist_vec).normalize().multiplyScalar(0.01);
-    const end_pos = new THREE.Vector3().subVectors(dist_vec, view_pos);
-    make_pos_tween = () => {
-      const pos_tween = new TWEEN.Tween(camera.position).to(end_pos, 500)
-        .easing(TWEEN.Easing.Cubic.InOut)
-        .start();
-    }
-    make_pos_tween();
+  if (isInFocus === true){ //user desires to leave focus
+    zoom(isInFocus, camOriginalPosition);
+    controls.movementSpeed = 30;
+    controls.rollSpeed = Math.PI / 6;
+    isInFocus = false;
+  }
+  else if (intersected){ //user desires to focus on one sprite
+    isInFocus = true;
+    camOriginalPosition = camera.position;
+    camOriginalRotation = camera.quaternion;
+    controls.movementSpeed = 0;
+    controls.rollSpeed = 0;
+    zoom(isInFocus, intersected.object.position);
+  }
+});
 
+const zoom = (isInFocus, tarPos) => {
+  console.log(isInFocus, tarPos);
+  // Position animation
+  const interpolateCamera = (isInFocus, tarPos) => {
+    const distVec = new THREE.Vector3()
+      .subVectors(tarPos, camera.position);
+    const viewPos = isInFocus
+      ? new THREE.Vector3()
+      : new THREE.Vector3().copy(distVec).normalize().multiplyScalar(0.01);
+    const endPos = new THREE.Vector3().subVectors(distVec, viewPos);
+
+    const posTween = new TWEEN.Tween(camera.position).to(endPos, 500)
+      .easing(TWEEN.Easing.Cubic.InOut)
+      .start();
+  }
+  const rotateCamera = (isInFocus, tarPos) => {
     //Rotation animation
     const qm = new THREE.Quaternion();
-    const temp_cam = camera.clone();
-    temp_cam.lookAt(intersected.object.position);
-    const destRotation = temp_cam.quaternion;
-
+    let destRotation;
+    if (isInFocus) { //use original camera rotation
+      destRotation = camOriginalRotation;
+    } else { //find quaternion of camera pointing at sprite
+      const tempCam = camera.clone();
+      tempCam.lookAt(tarPos);
+      destRotation = tempCam.quaternion;
+    }
     THREE.Quaternion.slerp(camera.quaternion, destRotation, qm, 1);
     qm.normalize();
     camera.quaternion = qm;
   }
-});
+  interpolateCamera(isInFocus, tarPos);
+  rotateCamera(isInFocus, tarPos);
+}
 
 //Creating Sprites
 const subwayImgNames = ['american', 'banana_peppers', 'black_forest_ham',
