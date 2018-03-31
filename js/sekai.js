@@ -7,11 +7,11 @@ scene.background = new THREE.Color(0x181817);
 scene.fog = new THREE.FogExp2(scene.background, 0.02);
 
 //Camera and camera controls
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 1, 1000);
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 3, 1000);
 const clock = new THREE.Clock();
 const controls = new THREE.FlyControls(camera);
 controls.domElement = container;
-controls.movementSpeed = 30;
+controls.movementSpeed = 0;
 controls.rollSpeed = Math.PI / 6;
 
 //Renderer
@@ -26,67 +26,80 @@ const mouse = new THREE.Vector2();
 let isInFocus = false;
 let camOriginalPosition;
 let camOriginalRotation;
+let ongoingTween = [];
 window.addEventListener('mousemove', (event) => {
   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 });
 
 renderer.domElement.addEventListener('click', (event) => {
-  if (isInFocus === true){ //user desires to leave focus
-    zoom(isInFocus, camOriginalPosition);
-    controls.movementSpeed = 30;
-    controls.rollSpeed = Math.PI / 6;
+  if (isInFocus){ //user desires to leave focus
+    zoom(camOriginalPosition);
+    controls.rollSpeed = Math.PI/6;
+    intersected.object.material.opacity = 0.5;
+    intersected.object.material.fog = true;
     isInFocus = false;
-  }
-  else if (intersected){ //user desires to focus on one sprite
-    isInFocus = true;
-    camOriginalPosition = camera.position;
-    camOriginalRotation = camera.quaternion;
-    controls.movementSpeed = 0;
+  }else if (intersected){ //user desires to focus on one sprite
     controls.rollSpeed = 0;
-    zoom(isInFocus, intersected.object.position);
+    intersected.object.material.fog = false;
+    intersected.object.material.color.set(0xffffff);
+    camOriginalPosition = camera.position.clone();
+    camOriginalRotation = camera.quaternion.clone();
+    zoom(intersected.object.position);
+    isInFocus = true;
   }
 });
 
-const zoom = (isInFocus, tarPos) => {
-  console.log(isInFocus, tarPos);
-  // Position animation
-  const interpolateCamera = (isInFocus, tarPos) => {
-    const distVec = new THREE.Vector3()
-      .subVectors(tarPos, camera.position);
-    const viewPos = isInFocus
-      ? new THREE.Vector3()
-      : new THREE.Vector3().copy(distVec).normalize().multiplyScalar(0.01);
-    const endPos = new THREE.Vector3().subVectors(distVec, viewPos);
-    //Tweening
-    const posTween = new TWEEN.Tween(camera.position).to(endPos, 1000)
-      .easing(TWEEN.Easing.Quartic.Out)
-      .start();
+const zoom = (tarPos) => {
+  // Position animation setup
+  const distVec = new THREE.Vector3()
+    .subVectors(tarPos, camera.position);
+  const viewPos = isInFocus
+    ? new THREE.Vector3()
+    : distVec.clone().normalize().multiplyScalar(3);
+  const endCamPos = new THREE.Vector3().subVectors(distVec, viewPos);
+  endCamPos.add(camera.position);
+
+  const posTween = new TWEEN.Tween(camera.position)
+    .to(endCamPos, isInFocus ? 500 : 1000)
+    .easing(TWEEN.Easing.Quartic.Out);
+
+  //Rotation animation setup
+  const qm = new THREE.Quaternion();
+  const curQuarternion = camera.quaternion.clone();
+  let destRotation;
+  if (isInFocus) { //use original camera rotation
+    destRotation = camOriginalRotation;
+  } else { //find quaternion of camera pointing at sprite
+    const tempCam = camera.clone();
+    tempCam.lookAt(tarPos);
+    destRotation = tempCam.quaternion;
   }
-  const rotateCamera = (isInFocus, tarPos) => {
-    //Rotation animation
-    const qm = new THREE.Quaternion();
-    let destRotation;
-    if (isInFocus) { //use original camera rotation
-      destRotation = camOriginalRotation;
-    } else { //find quaternion of camera pointing at sprite
-      const tempCam = camera.clone();
-      tempCam.lookAt(tarPos);
-      destRotation = tempCam.quaternion;
-    }
-    //Tweening
-    const time = {t:0}
-    const rotTween = new TWEEN.Tween(time).to({t:1}, 1000)
-      .onUpdate(() => {
-        THREE.Quaternion.slerp(camera.quaternion, destRotation, qm, time.t);
-        qm.normalize();
-        camera.quaternion = qm;
-      })
-      .easing(TWEEN.Easing.Quartic.Out)
-      .start();
-  }
-  interpolateCamera(isInFocus, tarPos);
-  rotateCamera(isInFocus, tarPos);
+
+  const time = {t:0}
+  const rotTween = new TWEEN.Tween(time)
+    .to({t:1}, isInFocus ? 500 : 1000)
+    .onUpdate(() => {
+      THREE.Quaternion.slerp(curQuarternion, destRotation, qm, time.t);
+      qm.normalize();
+      camera.setRotationFromQuaternion(qm);
+    })
+    .easing(TWEEN.Easing.Quartic.Out);
+
+  //Fog animation setup
+  const normalDensity = {density: scene.fog.density};
+  const fogTween = new TWEEN.Tween(normalDensity)
+    .to({density: isInFocus ? 0.02 : 0.2}, isInFocus ? 500 : 1000)
+    .onUpdate(() => scene.fog.density = normalDensity.density)
+    .easing(TWEEN.Easing.Quartic.Out);
+
+  //Tweening
+  ongoingTween.forEach(tween => tween.stop());
+  ongoingTween = [rotTween, posTween, fogTween];
+  posTween.onStart(() => {
+    rotTween.start();
+    fogTween.start();
+  }).start();
 }
 
 //Creating Sprites
@@ -119,7 +132,9 @@ renderer.domElement.addEventListener('mouseleave', () => {
   controls.rollSpeed = 0;
 });
 renderer.domElement.addEventListener('mouseenter', () => {
-  controls.rollSpeed = Math.PI / 6;
+  if (!isInFocus){
+    controls.rollSpeed = Math.PI / 6;
+  }
 });
 
 //Animate and Render
@@ -131,14 +146,15 @@ function animate() {
 function render() {
   const delta = clock.getDelta();
   controls.update(delta);
-
-  raycaster.setFromCamera( mouse, camera );
-  const intersects = raycaster.intersectObjects( scene.children );
-  if (intersected && intersected != intersects[0]) {
-    intersected.object.material.color.set(0xffffff);
+  if (!isInFocus) {
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(scene.children);
+    if (intersected && intersected != intersects[0]) {
+      intersected.object.material.color.set(0xffffff);
+    }
+    intersected = intersects[0];
+    intersected && intersected.object.material.color.set(0xe57373);
   }
-  intersected = intersects[0];
-  intersected && intersected.object.material.color.set( 0xe57373 );
   TWEEN.update();
 
   renderer.render(scene, camera);
