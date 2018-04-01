@@ -1,5 +1,7 @@
 // CONSTANTS
 const SPRITE_MAX_DIM = 4;
+const MAX_SPRITE_WINDOW_RATIO = 0.7;
+const REGION_SIZE = 50;
 
 const container = document.createElement( 'div' );
 document.body.appendChild( container );
@@ -8,14 +10,16 @@ document.body.appendChild( container );
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x181817);
 scene.fog = new THREE.Fog(scene.background, 3, 50);
+const regions = [];
 
 // Camera and camera controls
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 3, 1000);
 const clock = new THREE.Clock();
 const controls = new THREE.FlyControls(camera);
 controls.domElement = container;
-controls.movementSpeed = 0;
+controls.movementSpeed = 30;
 controls.rollSpeed = Math.PI / 6;
+let camRegion = new THREE.Vector3();
 let timer;
 
 // Renderer
@@ -37,15 +41,17 @@ window.addEventListener('mousemove', (event) => {
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 });
 
-renderer.domElement.addEventListener('click', event => {
+renderer.domElement.addEventListener('mousedown', event => {
   if (isInFocus){ //user desires to leave focus
     zoom(camOriginalPosition);
     controls.rollSpeed = Math.PI/6;
+    controls.movementSpeed = 30;
     intersected.object.material.fog = true;
     intersected.object.material.opacity = 0.5;
     isInFocus = false;
   }else if (intersected){ //user desires to focus on one sprite
     controls.rollSpeed = 0;
+    controls.movementSpeed = 0;
     intersected.object.material.color.set(0xffffff);
     intersected.object.material.fog = false;
     intersected.object.material.opacity = 1;
@@ -57,12 +63,16 @@ renderer.domElement.addEventListener('click', event => {
 });
 
 const zoom = (tarPos) => {
+  // allow camera to view close object
+  camera.near = isInFocus ? 3 : calcViewScalar(intersected.object) * 0.8;
+  camera.updateProjectionMatrix();
+
   // Position animation setup
   const distVec = new THREE.Vector3()
     .subVectors(tarPos, camera.position);
   const viewPos = isInFocus
     ? new THREE.Vector3()
-    : distVec.clone().normalize().multiplyScalar(3);
+    : distVec.clone().normalize().multiplyScalar(calcViewScalar(intersected.object));
   const endCamPos = new THREE.Vector3().subVectors(distVec, viewPos);
   endCamPos.add(camera.position);
 
@@ -108,6 +118,17 @@ const zoom = (tarPos) => {
   }).start();
 }
 
+const calcViewScalar = (viewObject) => {
+  const visHeight = () => {
+    return isBoundedByHeight
+      ? viewObject.scale.y/MAX_SPRITE_WINDOW_RATIO
+      : viewObject.scale.x/MAX_SPRITE_WINDOW_RATIO/camera.aspect;
+  }
+  const isBoundedByHeight = viewObject.scale.y/window.innerHeight >= viewObject.scale.x/window.innerWidth;
+  const vFOV = camera.fov * Math.PI/180;
+  return visHeight() / (2*Math.tan(vFOV/2));
+}
+
 renderer.domElement.addEventListener('wheel', event => {
   if (isInFocus) {return;}
   controls.movementSpeed = 30;
@@ -124,28 +145,25 @@ renderer.domElement.addEventListener('wheel', event => {
   }, 200);
 })
 
-// Creating Sprites
-// const subwayImgNames = ['american', 'banana_peppers', 'black_forest_ham',
-//  'black_olives', 'chipotle_southwest', 'cucumbers', 'flatbread', 'green_peppers',
-//  'italian', 'italian_bmt', 'italian_herbs_and_cheese', 'jalapenos', 'lettuce',
-//  'mayonnaise', 'meatball_marinara', 'monterey_cheddar', 'multi_grain_flatbread',
-//  'mustard', 'nine_grain_wheat', 'oil', 'oven_roasted_chicken', 'pickles', 'ranch',
-//  'red_onions', 'spinach', 'sweet_onion', 'sweet_onion_chicken_teriyaki', 'tomatoes',
-//  'tuna', 'turkey_breast', 'vinaigrette', 'vinegar'];
-const pepperNames = ['horizontal_pepper', 'square_pepper', 'vertical_pepper'];
-for (let i = 0; i < 500; i++) {
-  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-    map: new THREE.TextureLoader().load('./assets/rectangular_peppers/' + pepperNames[i%3] + '.png',
-      texture => {
-        const maxDim = Math.max(texture.image.height, texture.image.width);
-        maxDim === texture.image.width
-          ? sprite.scale.set(SPRITE_MAX_DIM, SPRITE_MAX_DIM * (texture.image.height / maxDim), 1)
-          : sprite.scale.set(SPRITE_MAX_DIM * (texture.image.width / maxDim), SPRITE_MAX_DIM, 1);
-      }),
-    fog: true
-  }));
-  sprite.position.set(Math.random()*100-50, Math.random()*100-50, Math.random()*100-50);
-  scene.add(sprite);
+// Creating Regions
+const calcCameraRegion = () => {
+  const camPos = camera.position;
+  const x = Math.floor(camPos.x/REGION_SIZE) * REGION_SIZE;
+  const y = Math.floor(camPos.y/REGION_SIZE) * REGION_SIZE;
+  const z = Math.floor(camPos.z/REGION_SIZE) * REGION_SIZE;
+  return {x, y, z};
+}
+const camPos = calcCameraRegion();
+for (let i = 0; i < 27; i++) {
+  const spriteCount = 40;
+  const regionCoords = {
+    x : camPos.x + REGION_SIZE * (Math.floor(i / 9) - 1),
+    y : camPos.y + REGION_SIZE * (Math.floor(i / 3) % 3 - 1),
+    z : camPos.z + REGION_SIZE * (i % 3 - 1)
+  };
+  const regionPos = new THREE.Vector3(regionCoords.x ,regionCoords.y, regionCoords.z);
+  const region = new Region(scene, regionPos, 50, 40);
+  regions.push(region);
 }
 
 // Window adjustment cases
@@ -177,6 +195,9 @@ function render() {
     const intersects = raycaster.intersectObjects(scene.children);
     if (intersected && intersected != intersects[0]) {
       intersected.object.material.color.set(0xffffff);
+      $('html,body').css('cursor', 'pointer');
+    }else{
+      $('html,body').css('cursor', 'default');
     }
     intersected = intersects[0];
     intersected && intersected.object.material.color.set(0xe57373);
