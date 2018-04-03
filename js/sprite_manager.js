@@ -1,24 +1,29 @@
-const createSprites = (scene, camPos, radius, spriteCount) => {
-  const sprites = [];
+const createSprites = (scene, camPos, spawnRadius, spriteCount) => {
   for (let i = 0; i < spriteCount; i++) {
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       color: parseInt(Math.floor(Math.random() * (16 ** 6)).toString(16), 16),
-      fog: false
+      fog: true
     }));
-    sprite.scale.set(1, 1, 1);
-    sprite.position.set(...randomPositionInSquare(camPos, radius))
+    sprite.scale.set(4, 4, 4);
+    sprite.position.set(...randomPositionInSquare(camPos, spawnRadius));
     scene.add(sprite);
-    sprites.push(sprite);
   }
-  return sprites;
 }
 
-const randomPositionInSquare = (camPos, radius) => {
+const randomPositionInSquare = (camPos, spawnRadius) => {
   return [
-    THREE.Math.randFloatSpread(radius * 2) + camPos.x,
-    THREE.Math.randFloatSpread(radius * 2) + camPos.y,
-    THREE.Math.randFloatSpread(radius * 2) + camPos.z
+    THREE.Math.randFloatSpread(spawnRadius * 2) + camPos.x,
+    THREE.Math.randFloatSpread(spawnRadius * 2) + camPos.y,
+    THREE.Math.randFloatSpread(spawnRadius * 2) + camPos.z
   ];
+}
+
+const removeSprites = (scene, camPos, spawnRadius) => {
+  scene.children.forEach((sprite) => {
+    if (camPos.distanceTo(sprite.position) > spawnRadius) {
+      scene.remove(sprite);
+    }
+  });
 }
 
 // const subwayImgNames = ['american', 'banana_peppers', 'black_forest_ham',

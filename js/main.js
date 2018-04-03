@@ -3,18 +3,21 @@ document.body.appendChild( container );
 
 // Scene
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x181817);
-scene.fog = new THREE.Fog(scene.background, 3, 50);
+scene.background = new THREE.Color(SCENE_BACKGROUND);
+scene.fog = new THREE.Fog(scene.background, DEFAULT_FOG_NEAR, DEFAULT_FAR);
 const regions = [];
 
 // Camera and camera controls
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 3, 50);
+const camera = new THREE.PerspectiveCamera(
+  75, window.innerWidth/window.innerHeight, DEFAULT_NEAR, DEFAULT_FAR);
 const clock = new THREE.Clock();
 const controls = new THREE.FlyControls(camera);
 controls.domElement = container;
 controls.movementSpeed = DEFAULT_MOVEMENT_SPEED;
 controls.rollSpeed = DEFAULT_ROLL_SPEED;
-let camRegion = new THREE.Vector3();
+const initialSphereCenter = new THREE.Vector3().addVectors(
+  camera.position, new THREE.Vector3(1000, 1000, 1000))
+  //initialize far from camera to spawn on start
 let timer;
 
 // Renderer
@@ -25,8 +28,11 @@ container.appendChild(renderer.domElement);
 // Raycaster
 const raycaster = new THREE.Raycaster();
 raycaster.near = DEFAULT_NEAR;
-raycaster.far = DEFAULT_FAR;
+raycaster.far = 50;
 const mouse = new THREE.Vector2();
+
+const loadSphere = new SphericalLoading(
+  scene, SPAWN_RADIUS, VIEW_RADIUS, initialSphereCenter, SPRITE_SPAWN_PER_LOAD);
 
 // Animate and Render
 function animate() {
@@ -38,6 +44,7 @@ function render() {
   controls.update(clock.getDelta());
 
   if (!isInFocus) {
+    loadSphere.checkSpawn(camera.position);
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(scene.children);
     if (intersected && intersected != intersects[0]) {
@@ -53,6 +60,5 @@ function render() {
   renderer.render(scene, camera);
 }
 
-createSprites(scene, camera.position, VIEW_RADIUS, SPRITE_SPAWN_COUNT);
 setListeners();
 animate();

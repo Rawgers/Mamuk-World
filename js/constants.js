@@ -14,9 +14,10 @@ const SPRITE_SPAWN_PER_LOAD = 500;
 // Camera & Fog & Raycaster
 const DEFAULT_NEAR = 3;
 const DEFAULT_FAR = 50;
+const DEFAULT_FOG_NEAR = 30;
 const FOCUS_FOG_FAR = 10;
-const VIEW_RADIUS = 20;
-const SPAWN_RADIUS = VIEW_RADIUS * 0.7;
+const VIEW_RADIUS = DEFAULT_FAR * 0.5;
+const SPAWN_RADIUS = DEFAULT_FAR * 2;
 
 // TODO: Make tween constants
 

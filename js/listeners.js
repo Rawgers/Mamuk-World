@@ -26,14 +26,12 @@ const setListeners = () => {
   //Scroll to zoom in
   renderer.domElement.addEventListener('wheel', event => {
     if (isInFocus) {return;}
-    controls.movementSpeed = DEFAULT_MOVEMENT_SPEED;
     controls.moveState.forward = event.wheelDelta > 0 ? 1 : 0;
     controls.moveState.back = event.wheelDelta < 0 ? 1 : 0;
     controls.updateMovementVector();
 
     clearTimeout(timer);
     timer = setTimeout(() => {
-      controls.movementSpeed = 0;
       controls.moveState.forward = 0;
       controls.moveState.back = 0;
       controls.updateMovementVector();
