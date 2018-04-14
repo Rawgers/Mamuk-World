@@ -14,7 +14,7 @@ const zoom = (tarPos) => {
   endCamPos.add(camera.position);
 
   const posTween = new TWEEN.Tween(camera.position)
-    .to(endCamPos, isInFocus ? 500 : 1000)
+    .to(endCamPos, isInFocus ? TWEEN_ZOOM_OUT : TWEEN_ZOOM_IN)
     .easing(TWEEN.Easing.Quartic.Out);
 
   //Rotation animation setup
@@ -31,7 +31,7 @@ const zoom = (tarPos) => {
 
   const time = {t:0}
   const rotTween = new TWEEN.Tween(time)
-    .to({t:1}, isInFocus ? 500 : 1000)
+    .to({t:1}, isInFocus ? TWEEN_ZOOM_OUT : TWEEN_ZOOM_IN)
     .onUpdate(() => {
       THREE.Quaternion.slerp(curQuarternion, destRotation, qm, time.t);
       qm.normalize();
@@ -42,8 +42,11 @@ const zoom = (tarPos) => {
   //Fog animation setup
   const normalFar = {far: scene.fog.far};
   const fogTween = new TWEEN.Tween(normalFar)
-    .to({far: isInFocus ? 50 : 10}, isInFocus ? 500 : 1000)
-    .onUpdate(() => scene.fog.far = normalFar.far)
+    .to({far: isInFocus ? DEFAULT_FAR : FOCUS_FOG_FAR},
+      isInFocus ? TWEEN_ZOOM_OUT : TWEEN_ZOOM_IN)
+    .onUpdate(() => {
+      scene.fog.far = normalFar.far;
+    })
     .easing(TWEEN.Easing.Quartic.Out);
 
   //Tweening
@@ -71,13 +74,13 @@ const toggle = () => {
     controls.rollSpeed = DEFAULT_ROLL_SPEED;
     controls.movementSpeed = DEFAULT_MOVEMENT_SPEED;
     intersected.object.material.fog = true;
-    intersected.object.material.opacity = 0.5;
-    camera.near = 3;
+    intersected.object.material.opacity = VISITED_SPRITE_OPACITY;
+    camera.near = DEFAULT_NEAR;
     isInFocus = false;
   }else{
     controls.rollSpeed = 0;
     controls.movementSpeed = 0;
-    intersected.object.material.color.set(0xffffff);
+    // intersected.object.material.color.set(0xffffff);
     intersected.object.material.fog = false;
     intersected.object.material.opacity = 1;
     camera.near = calcViewScalar(intersected.object) * 0.8; //view zoomed object

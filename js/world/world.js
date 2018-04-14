@@ -11,7 +11,7 @@ const regions = [];
 const camera = new THREE.PerspectiveCamera(
   75, window.innerWidth/window.innerHeight, DEFAULT_NEAR, DEFAULT_FAR);
 const clock = new THREE.Clock();
-const controls = new THREE.FlyControls(camera);
+const controls = new THREE.FirstPersonControls(camera, container);
 controls.domElement = container;
 controls.movementSpeed = DEFAULT_MOVEMENT_SPEED;
 controls.rollSpeed = DEFAULT_ROLL_SPEED;
@@ -31,8 +31,10 @@ raycaster.near = DEFAULT_NEAR;
 raycaster.far = 50;
 const mouse = new THREE.Vector2();
 
-const loadSphere = new SphericalLoading(
-  scene, SPAWN_RADIUS, VIEW_RADIUS, initialSphereCenter, SPRITE_SPAWN_PER_LOAD);
+const world = new THREE.Mesh(
+  new THREE.SphereGeometry(50, 32, 32),
+  new THREE.MeshBasicMaterial(side: THREE.BackSide)
+);
 
 // Animate and Render
 function animate() {
@@ -44,17 +46,16 @@ function render() {
   controls.update(clock.getDelta());
 
   if (!isInFocus) {
-    loadSphere.checkSpawn(camera.position);
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(scene.children);
     if (intersected && intersected != intersects[0]) {
-      intersected.object.material.color.set(0xffffff);
+      // intersected.object.material.color.set(0xffffff);
       $('html,body').css('cursor', 'pointer');
     }else{
       $('html,body').css('cursor', 'default');
     }
     intersected = intersects[0];
-    intersected && intersected.object.material.color.set(0xe57373);
+    // intersected && intersected.object.material.color.set(0xe57373);
   }
   TWEEN.update();
   renderer.render(scene, camera);

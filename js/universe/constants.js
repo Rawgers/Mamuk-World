@@ -19,9 +19,11 @@ const FOCUS_FOG_FAR = 10;
 const VIEW_RADIUS = DEFAULT_FAR * 0.5;
 const SPAWN_RADIUS = DEFAULT_FAR * 2;
 
-// TODO: Make tween constants
+// Tween durations
+const TWEEN_ZOOM_IN = 1000;
+const TWEEN_ZOOM_OUT = 500;
 
-// Controls constants
+// Controls
 const DEFAULT_ROLL_SPEED = Math.PI/6;
 const DEFAULT_MOVEMENT_SPEED = 30;
 const ZOOM_IN_DURATION = 800;
