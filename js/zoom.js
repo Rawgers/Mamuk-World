@@ -46,6 +46,7 @@ const zoom = (tarPos) => {
       isInFocus ? TWEEN_ZOOM_OUT : TWEEN_ZOOM_IN)
     .onUpdate(() => {
       scene.fog.far = normalFar.far;
+      console.log(scene.fog.far);
     })
     .easing(TWEEN.Easing.Quartic.Out);
 

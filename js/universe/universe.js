@@ -4,7 +4,7 @@ document.body.appendChild( container );
 // Scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(SCENE_BACKGROUND);
-scene.fog = new THREE.Fog(scene.background, DEFAULT_FOG_NEAR, DEFAULT_FAR);
+scene.fog = new THREE.Fog(scene.background, DEFAULT_NEAR, DEFAULT_FAR);
 const regions = [];
 
 // Camera and camera controls
@@ -32,7 +32,8 @@ raycaster.far = 50;
 const mouse = new THREE.Vector2();
 
 const loadSphere = new SphericalLoading(
-  scene, SPAWN_RADIUS, VIEW_RADIUS, initialSphereCenter, SPRITE_SPAWN_PER_LOAD);
+  scene, SPAWN_RADIUS, VIEW_RADIUS, initialSphereCenter, SPRITE_SPAWN_PER_LOAD
+);
 
 // Animate and Render
 function animate() {
@@ -42,6 +43,7 @@ function animate() {
 
 function render() {
   controls.update(clock.getDelta());
+  console.log(scene.fog);
 
   if (!isInFocus) {
     loadSphere.checkSpawn(camera.position);

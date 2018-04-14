@@ -29,15 +29,6 @@ THREE.FlyControls = function ( object, domElement ) {
 	this.moveVector = new THREE.Vector3( 0, 0, 0 );
 	this.rotationVector = new THREE.Vector3( 0, 0, 0 );
 
-	/// MAMUK - mouse speed
-	const mouseSpeed = new MouseSpeed();
-	this.mouseSpeedVector = new THREE.Vector2();
-	const onCalcSpeed = () => {
-    this.mouseSpeedVector.x = mouseSpeed.speedX;
-    this.mouseSpeedVector.y = mouseSpeed.speedY;
-	};
-	mouseSpeed.init(onCalcSpeed);
-
 	this.handleEvent = function ( event ) {
 
 		if ( typeof this[ event.type ] == 'function' ) {
@@ -172,15 +163,7 @@ THREE.FlyControls = function ( object, domElement ) {
 	// Deadzone
 	const timer = setTimeout(this.mousemove, 5000);
 	this.mousemove = function(event) {
-		if ( ! this.dragToLook || this.mouseStatus > 0 ) {
-			// console.log(this.mouseSpeedVector);
-			if (this.mouseSpeedVector.length() > 100) {
-				clearTimeout(timer);
-				this.moveState.yawLeft = 0;
-				this.moveState.pitchDown = 0;
-				this.updateRotationVector();
-				return;
-			}
+		if (!this.dragToLook || this.mouseStatus > 0) {
 			const container = this.getContainerDimensions();
 			const halfWidth  = container.size[0] / 2;
 			const halfHeight = container.size[1] / 2;
