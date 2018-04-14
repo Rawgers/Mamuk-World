@@ -29,6 +29,15 @@ THREE.FlyControls = function ( object, domElement ) {
 	this.moveVector = new THREE.Vector3( 0, 0, 0 );
 	this.rotationVector = new THREE.Vector3( 0, 0, 0 );
 
+	/// MAMUK - mouse speed
+	const mouseSpeed = new MouseSpeed();
+	this.mouseSpeedVector = new THREE.Vector2();
+	const onCalcSpeed = () => {
+    this.mouseSpeedVector.x = mouseSpeed.speedX;
+    this.mouseSpeedVector.y = mouseSpeed.speedY;
+	};
+	mouseSpeed.init(onCalcSpeed);
+
 	this.handleEvent = function ( event ) {
 
 		if ( typeof this[ event.type ] == 'function' ) {
@@ -113,6 +122,7 @@ THREE.FlyControls = function ( object, domElement ) {
 
 		if ( this.domElement !== document ) {
 
+
 			this.domElement.focus();
 
 		}
@@ -139,22 +149,69 @@ THREE.FlyControls = function ( object, domElement ) {
 
 	};
 
-	this.mousemove = function( event ) {
+	// ORIGINAL LIBRARY
+	// this.mousemove = function( event ) {
+	//
+	// 	if ( ! this.dragToLook || this.mouseStatus > 0 ) {
+	//
+	// 		var container = this.getContainerDimensions();
+	// 		var halfWidth  = container.size[ 0 ] / 2;
+	// 		var halfHeight = container.size[ 1 ] / 2;
+	//
+	// 		this.moveState.yawLeft   = - ( ( event.pageX - container.offset[ 0 ] ) - halfWidth  ) / halfWidth;
+	// 		this.moveState.pitchDown =   ( ( event.pageY - container.offset[ 1 ] ) - halfHeight ) / halfHeight;
+	//
+	// 		this.updateRotationVector();
+	//
+	// 	}
+	//
+	// };
 
+	/// FOR MAMUK
+
+	// Deadzone
+	const timer = setTimeout(this.mousemove, 5000);
+	this.mousemove = function(event) {
 		if ( ! this.dragToLook || this.mouseStatus > 0 ) {
+			// console.log(this.mouseSpeedVector);
+			if (this.mouseSpeedVector.length() > 100) {
+				clearTimeout(timer);
+				this.moveState.yawLeft = 0;
+				this.moveState.pitchDown = 0;
+				this.updateRotationVector();
+				return;
+			}
+			const container = this.getContainerDimensions();
+			const halfWidth  = container.size[0] / 2;
+			const halfHeight = container.size[1] / 2;
+			if (this.moveState.forward == 0 && this.moveState.back == 0) {
+				const deadzoneRadius = Math.min(window.innerWidth, window.innerHeight) * 0.35 / 2;
 
-			var container = this.getContainerDimensions();
-			var halfWidth  = container.size[ 0 ] / 2;
-			var halfHeight = container.size[ 1 ] / 2;
+				const cursorVector = new THREE.Vector2(
+					event.pageX - container.offset[0] - halfWidth,
+					event.pageY - container.offset[1] - halfHeight
+				);
+				const cursorVectorLength = cursorVector.length();
 
-			this.moveState.yawLeft   = - ( ( event.pageX - container.offset[ 0 ] ) - halfWidth  ) / halfWidth;
-			this.moveState.pitchDown =   ( ( event.pageY - container.offset[ 1 ] ) - halfHeight ) / halfHeight;
+				if (cursorVectorLength < deadzoneRadius) {
+					this.moveState.yawLeft = 0;
+					this.moveState.pitchDown = 0;
+				} else {
+					const distanceFromCircle = cursorVectorLength - deadzoneRadius;
 
+					const xFromCircle = cursorVector.x * distanceFromCircle / cursorVectorLength;
+					const yFromCircle = cursorVector.y * distanceFromCircle / cursorVectorLength;
+
+					this.moveState.yawLeft = -xFromCircle / halfWidth;
+					this.moveState.pitchDown = yFromCircle / halfHeight;
+				}
+			} else {
+				this.moveState.yawLeft   = - ( ( event.pageX - container.offset[ 0 ] ) - halfWidth  ) / halfWidth;
+				this.moveState.pitchDown =   ( ( event.pageY - container.offset[ 1 ] ) - halfHeight ) / halfHeight;
+			}
 			this.updateRotationVector();
-
 		}
-
-	};
+	}
 
 	this.mouseup = function( event ) {
 
