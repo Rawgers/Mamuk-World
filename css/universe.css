@@ -1,0 +1,21 @@
+body {
+  margin: 0;
+  overflow:hidden;
+}
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
+#universe-fav-button{
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: yellow;
+  border-radius: 50%;
+  padding: 20px;
+}
+
+#zoom-fav {
+  
+}

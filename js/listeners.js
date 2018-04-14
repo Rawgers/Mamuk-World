@@ -39,13 +39,17 @@ const setListeners = () => {
   })
 
   renderer.domElement.addEventListener('mousedown', event => {
-    if (isInFocus){ //user desires to leave focus
+    console.log(intersected);
+    if (isInFocus && intersected) {
+      return;
+    }else if (isInFocus){ //user desires to leave focus
       zoom(camOriginalPosition);
       toggle();
     }else if (intersected){ //user desires to focus on one sprite
+      focusedSprite = intersected.object;
       camOriginalPosition = camera.position.clone();
       camOriginalRotation = camera.quaternion.clone();
-      zoom(intersected.object.position);
+      zoom(focusedSprite.position);
       toggle();
     }
   });

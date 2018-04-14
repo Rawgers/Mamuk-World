@@ -43,21 +43,21 @@ function animate() {
 
 function render() {
   controls.update(clock.getDelta());
-  console.log(scene.fog);
-
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(scene.children);
   if (!isInFocus) {
     loadSphere.checkSpawn(camera.position);
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(scene.children);
+
     if (intersected && intersected != intersects[0]) {
       // intersected.object.material.color.set(0xffffff);
       $('html,body').css('cursor', 'pointer');
     }else{
       $('html,body').css('cursor', 'default');
     }
-    intersected = intersects[0];
     // intersected && intersected.object.material.color.set(0xe57373);
   }
+  intersected = intersects[0];
+
   TWEEN.update();
   renderer.render(scene, camera);
 }

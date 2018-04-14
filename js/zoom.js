@@ -1,4 +1,5 @@
 let intersected;
+let focusedSprite;
 let isInFocus = false;
 let camOriginalQuaternion;
 let camOriginalRotation;
@@ -9,7 +10,7 @@ const zoom = (tarPos) => {
   const distVec = new THREE.Vector3().subVectors(tarPos, camera.position);
   const viewPos = isInFocus
     ? new THREE.Vector3()
-    : distVec.clone().normalize().multiplyScalar(calcViewScalar(intersected.object));
+    : distVec.clone().normalize().multiplyScalar(calcViewScalar(focusedSprite));
   const endCamPos = new THREE.Vector3().subVectors(distVec, viewPos);
   endCamPos.add(camera.position);
 
@@ -46,7 +47,6 @@ const zoom = (tarPos) => {
       isInFocus ? TWEEN_ZOOM_OUT : TWEEN_ZOOM_IN)
     .onUpdate(() => {
       scene.fog.far = normalFar.far;
-      console.log(scene.fog.far);
     })
     .easing(TWEEN.Easing.Quartic.Out);
 
@@ -74,17 +74,18 @@ const toggle = () => {
   if (isInFocus) {
     controls.rollSpeed = DEFAULT_ROLL_SPEED;
     controls.movementSpeed = DEFAULT_MOVEMENT_SPEED;
-    intersected.object.material.fog = true;
-    intersected.object.material.opacity = VISITED_SPRITE_OPACITY;
+    focusedSprite.material.fog = true;
+    focusedSprite.material.opacity = VISITED_SPRITE_OPACITY;
     camera.near = DEFAULT_NEAR;
     isInFocus = false;
   }else{
     controls.rollSpeed = 0;
     controls.movementSpeed = 0;
-    // intersected.object.material.color.set(0xffffff);
-    intersected.object.material.fog = false;
-    intersected.object.material.opacity = 1;
-    camera.near = calcViewScalar(intersected.object) * 0.8; //view zoomed object
+    // focusedSprite.material.color.set(0xffffff);
+    focusedSprite.material.fog = false;
+    focusedSprite.material.opacity = 1;
+    camera.near = calcViewScalar(focusedSprite) * 0.8; //view zoomed object
+    $('html,body').css('cursor', 'default');
     isInFocus = true;
   }
   camera.updateProjectionMatrix();
