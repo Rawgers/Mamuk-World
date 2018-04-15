@@ -3,36 +3,60 @@ class SphericalLoading{
     this.scene = scene;
     this.spawnRadius = spawnRadius;
     this.viewRadius = viewRadius;
-    this.previousSphereCenter = initialSphereCenter;
+    this.prevSphereCenter = initialSphereCenter;
     this.spawnCount = spawnCount;
+    this.loader = new THREE.TextureLoader();
   }
 
   checkSpawn(camPos) {
-    if (camPos.distanceTo(this.previousSphereCenter) > this.viewRadius) { //if need to spawn
+    if (camPos.distanceTo(this.prevSphereCenter) > this.viewRadius) { //if need to spawn
       this.createSprites(camPos);
       this.removeSprites(camPos);
-      Object.assign(this.previousSphereCenter,camPos);
+      Object.assign(this.prevSphereCenter, camPos);
     }
   };
 
   createSprites(camPos) {
-    for (let i = 0; i < this.spawnCount; i++) {
-      const spawnPos = this.randomPositionInSphere(camPos, this.spawnRadius);
-      if (spawnPos.distanceTo(this.previousSphereCenter) < this.spawnRadius
+    this.createSpritesByInterval(0, camPos, this.prevSphereCenter.clone());
+  }
+
+  createSpritesByInterval(curCount, camPos, prevSphereCenter) {
+    for (let i=0; i < 5; i++) {
+      const spawnPos = this.randomPositionInCube(camPos);
+      if (spawnPos.distanceTo(prevSphereCenter) < this.spawnRadius
         || spawnPos.distanceTo(camPos) > this.spawnRadius) {
         continue;
       }
-      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-        color: parseInt(Math.floor(Math.random() * (16 ** 6)).toString(16), 16),
-        fog: true
-      }));
-      sprite.scale.set(SPRITE_FRAME_DIMENSION, SPRITE_FRAME_DIMENSION, 1);
+      const sprite = new THREE.Sprite();
+      this.createSpriteMap(i, sprite);
       sprite.position.copy(spawnPos);
-      this.scene.add(sprite);
+    }
+    if (curCount < this.spawnCount) {
+      setTimeout(() => this.createSpritesByInterval(curCount + 5, camPos, prevSphereCenter), 1);
     }
   }
 
-  randomPositionInSphere (camPos) {
+  createSpriteMap(index, sprite) {
+    this.loader.load(
+      './assets/mamuk_assets/' + ASSETS[index%ASSETS.length] + '.png',
+      (texture) => {
+        const spriteMaterial = new THREE.SpriteMaterial({map: texture, fog: true});
+        sprite.material = spriteMaterial;
+        this.setSpriteScale(sprite, texture);
+        this.scene.add(sprite);
+      }
+    );
+  }
+
+  setSpriteScale(sprite, texture) {
+    if (texture.image.width >= texture.image.height) {
+      sprite.scale.set(SPRITE_FRAME_DIMENSION, SPRITE_FRAME_DIMENSION * texture.image.height/texture.image.width);
+    } else {
+      sprite.scale.set(SPRITE_FRAME_DIMENSION * texture.image.width/texture.image.height, SPRITE_FRAME_DIMENSION);
+    }
+  }
+
+  randomPositionInCube(camPos) {
     return new THREE.Vector3(
       THREE.Math.randFloatSpread(this.spawnRadius * 2) + camPos.x,
       THREE.Math.randFloatSpread(this.spawnRadius * 2) + camPos.y,

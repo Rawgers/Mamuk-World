@@ -39,8 +39,7 @@ const setListeners = () => {
   })
 
   renderer.domElement.addEventListener('mousedown', event => {
-    console.log(intersected);
-    if (isInFocus && intersected) {
+    if (isInFocus && intersected && intersected.object === focusedSprite) {
       return;
     }else if (isInFocus){ //user desires to leave focus
       zoom(camOriginalPosition);

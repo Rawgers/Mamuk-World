@@ -1,6 +1,7 @@
 body {
   margin: 0;
   overflow:hidden;
+  background-color: 0x181817;
 }
 canvas {
   width: 100%;
@@ -17,5 +18,5 @@ canvas {
 }
 
 #zoom-fav {
-  
+
 }

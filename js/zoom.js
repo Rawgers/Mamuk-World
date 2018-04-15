@@ -41,12 +41,15 @@ const zoom = (tarPos) => {
     .easing(TWEEN.Easing.Quartic.Out);
 
   //Fog animation setup
-  const normalFar = {far: scene.fog.far};
-  const fogTween = new TWEEN.Tween(normalFar)
-    .to({far: isInFocus ? DEFAULT_FAR : FOCUS_FOG_FAR},
+  const normalFog = {near: scene.fog.near, far: scene.fog.far,};
+  const fogTween = new TWEEN.Tween(normalFog)
+    .to(isInFocus
+        ? {near: DEFAULT_NEAR, far: DEFAULT_FAR}
+        : {near: FOCUS_FOG_NEAR, far: FOCUS_FOG_FAR},
       isInFocus ? TWEEN_ZOOM_OUT : TWEEN_ZOOM_IN)
     .onUpdate(() => {
-      scene.fog.far = normalFar.far;
+      scene.fog.near = normalFog.near;
+      scene.fog.far = normalFog.far;
     })
     .easing(TWEEN.Easing.Quartic.Out);
 
