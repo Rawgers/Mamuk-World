@@ -3,24 +3,78 @@
 	<head>
 		<meta charset=utf-8>
 		<title>DoWon</title>
-		<link rel="stylesheet" type="text/css" href="./css/universe.css" />
+		<link rel="stylesheet" type="text/css" href="./css/normalize.css" >
+		<link rel="stylesheet" type="text/css" href="./css/zoom_menu.css" >
+		<link rel="stylesheet" type="text/css" href="./css/universe.css" >
+		<link href="https://fonts.googleapis.com/css?family=Hi+Melody" rel="stylesheet" >
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
 	</head>
 	<body>
 		<!-- <div id="universe-fav-button"> HI </div> -->
-		<div id="zoom-menu-container">
-			<div>
+		<div id="button-container">
+			<i id="chat-button" class="fas fa-comment-dots"></i>
+			<i id="edit-button" class="fas fa-edit"></i>
+			<i id="map-button" class="far fa-map"></i>
+			<i id="home-button" class="fas fa-home"></i>
+		</div>
 
+		<div id="chat-container">
+			<span id="chat-shown-text"></span>
+			<span id="chat-hidden-text"></span>
+		</div>
+
+		<div id="edit-container">
+			<div id="fields">
+				<div id="name-container">
+					<p>Name</p>
+					<input type="text">
+				</div>
+				<div>Like</div>
+				<div>Dislike</div>
+				<div>Wish</div>
 			</div>
-			<div id="zoom-button-container">
-				<!-- <div id="zoom-fav"> ZOOM </div> -->
-				<!-- <i id="chat" class="fas fa-comment-dots"></i>
-				<i id="edit" class="fas fa-pencil-alt"></i>
-				<i id="map" class="fas fa-map-marker-alt"></i>
-				<i id="home" class="fas fa-home"></i> -->
+			<div id="actions">
+				<div id="cancel-button">Cancel</div>
+				<div id="submit-button">Submit</div>
 			</div>
 		</div>
 
+		<div id="home-link-overlay"></div>
+
+		<!-- <div id="world-container">
+			<div class="world">
+				<img src="assets/world_thumbnail/cave.jpg" />
+				<img src="assets/world_thumbnail/bubble.png" />
+			</div>
+			<div class="world">
+				<img src="assets/world_thumbnail/not_yet_available.svg" />
+				<img src="assets/world_thumbnail/bubble.png" />
+			</div>
+			<div class="world">
+				<img src="assets/world_thumbnail/shrine.jpg" />
+				<img src="assets/world_thumbnail/bubble.png" />
+			</div>
+			<div class="world">
+				<img src="assets/world_thumbnail/not_yet_available.svg" />
+				<img src="assets/world_thumbnail/bubble.png" />
+			</div>
+			<div class="world">
+				<img src="assets/world_thumbnail/not_yet_available.svg" />
+				<img src="assets/world_thumbnail/bubble.png" />
+			</div>
+			<div class="world">
+				<img src="assets/world_thumbnail/not_yet_available.svg" />
+				<img src="assets/world_thumbnail/bubble.png" />
+			</div>
+			<div class="world">
+				<img src="assets/world_thumbnail/evening.jpg" />
+				<img src="assets/world_thumbnail/bubble.png" />
+			</div>
+			<div class="world">
+				<img src="assets/world_thumbnail/sakura.jpg" />
+				<img src="assets/world_thumbnail/bubble.png" />
+			</div> -->
+		</div>
 
 		<script src="./js/lib/jquery.js"></script>
 		<script src="./js/lib/three.js"></script>
@@ -32,6 +86,7 @@
 		<script src="./js/universe/spherical_loading.js"></script>
 
 		<script src="./js/zoom.js"></script>
+		<script src="./js/zoom_menu.js"></script>
 		<script src="./js/listeners.js"></script>
 
 		<script src="./js/universe/universe.js"></script>

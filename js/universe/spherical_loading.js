@@ -71,14 +71,4 @@ class SphericalLoading{
       }
     });
   }
-
-  // const subwayImgNames = ['american', 'banana_peppers', 'black_forest_ham',
-  //  'black_olives', 'chipotle_southwest', 'cucumbers', 'flatbread', 'green_peppers',
-  //  'italian', 'italian_bmt', 'italian_herbs_and_cheese', 'jalapenos', 'lettuce',
-  //  'mayonnaise', 'meatball_marinara', 'monterey_cheddar', 'multi_grain_flatbread',
-  //  'mustard', 'nine_grain_wheat', 'oil', 'oven_roasted_chicken', 'pickles', 'ranch',
-  //  'red_onions', 'spinach', 'sweet_onion', 'sweet_onion_chicken_teriyaki', 'tomatoes',
-  //  'tuna', 'turkey_breast', 'vinaigrette', 'vinegar'];
-  //const pepperNames = ['horizontal_pepper', 'square_pepper', 'vertical_pepper'];
-
 }

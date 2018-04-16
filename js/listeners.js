@@ -1,13 +1,12 @@
-// Window adjustment cases
 const setListeners = () => {
-  //Resize window
+  // Resize window
   window.addEventListener('resize', event => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  //for raycaster's mouse position
+  // for raycaster's mouse position
   window.addEventListener('mousemove', event => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -23,7 +22,7 @@ const setListeners = () => {
     }
   });
 
-  //Scroll to zoom in
+  // Scroll to zoom in
   renderer.domElement.addEventListener('wheel', event => {
     if (isInFocus) {return;}
     controls.moveState.forward = event.wheelDelta > 0 ? 1 : 0;
@@ -38,6 +37,7 @@ const setListeners = () => {
     }, 200);
   })
 
+  // Zoom listener
   renderer.domElement.addEventListener('mousedown', event => {
     if (isInFocus && intersected && intersected.object === focusedSprite) {
       return;
@@ -52,4 +52,6 @@ const setListeners = () => {
       toggle();
     }
   });
+
+  //Show buttons
 }

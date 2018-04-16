@@ -80,15 +80,17 @@ const toggle = () => {
     focusedSprite.material.fog = true;
     focusedSprite.material.opacity = VISITED_SPRITE_OPACITY;
     camera.near = DEFAULT_NEAR;
+    hideZoomMenu();
     isInFocus = false;
   }else{
     controls.rollSpeed = 0;
     controls.movementSpeed = 0;
-    // focusedSprite.material.color.set(0xffffff);
+    focusedSprite.material.color.set(0xffffff);
     focusedSprite.material.fog = false;
     focusedSprite.material.opacity = 1;
     camera.near = calcViewScalar(focusedSprite) * 0.8; //view zoomed object
     $('html,body').css('cursor', 'default');
+    showZoomMenu();
     isInFocus = true;
   }
   camera.updateProjectionMatrix();

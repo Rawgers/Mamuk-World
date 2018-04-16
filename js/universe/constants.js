@@ -21,9 +21,12 @@ const FOCUS_FOG_NEAR = 0;
 const VIEW_RADIUS = DEFAULT_FAR * 0.5;
 const SPAWN_RADIUS = DEFAULT_FAR * 2.0;
 
-// Tween durations
+// Animation durations
 const TWEEN_ZOOM_IN = 1000;
 const TWEEN_ZOOM_OUT = 500;
+const FADE_DURATION = 200;
+const HOME_LINK_DURATION = 600;
+const TYPEWRITE_INTERVAL = 10;
 
 // Controls
 const DEFAULT_ROLL_SPEED = Math.PI/6;

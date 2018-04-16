@@ -49,12 +49,10 @@ function render() {
     loadSphere.checkSpawn(camera.position);
 
     if (intersected && intersected != intersects[0]) {
-      // intersected.object.material.color.set(0xffffff);
-      $('html,body').css('cursor', 'pointer');
-    }else{
-      $('html,body').css('cursor', 'default');
+      intersected.object.material.color.set(0xffffff);
     }
-    // intersected && intersected.object.material.color.set(0xe57373);
+    $('html,body').css('cursor', intersects[0] ? 'pointer' : 'default');
+    intersects[0] && intersects[0].object.material.color.set(0xe57373);
   }
   intersected = intersects[0];
 
