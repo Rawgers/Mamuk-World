@@ -40,49 +40,6 @@ p {
   visibility: hidden;
 }
 
-#edit-container {
-  position: absolute;
-  display: none;
-  left: 0;
-  top: 0;
-  width: 50vw;
-  height: 100vh;
-  background-color: purple;
-}
-
-#fields{
-  height: calc(100% - 4rem);
-  width: 100%;
-  background-color: grey;
-}
-
-#actions{
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 10%;
-  width: 100%;
-  background-color: pink;
-}
-
-#actions > * {
-  display: flex;
-  width: 50%;
-  height: 4rem;
-  margin: 0.4rem, 1.2rem;
-  border-radius: 0.4rem;
-  font-size: 2vw;
-  color: white;
-  cursor: pointer;
-}
-#cancel-button {
-  background-color: red;
-}
-
-#submit-button {
-  background-color: green;
-}
-
 #world-container {
   display: flex;
   justify-content: center;

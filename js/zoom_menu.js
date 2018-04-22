@@ -1,18 +1,18 @@
 // Get DOM elements
 const buttonContainer = $('#button-container');
 
-const chatContainer = $('#chat-container');
 const chatButton = $('#chat-button');
+const chatContainer = $('#chat-container');
 const shownText = $('#chat-shown-text');
 const hiddenText = $('#chat-hidden-text');
 
-const editContainer = $('#edit-container');
 const editButton = $('#edit-button');
-const cancelButton = $('#cancel-button');
-const submitButton = $('submit-button');
+const editContainer = $('#edit-container');
+const cancelButton = $('#edit-cancel-button');
+const submitButton = $('#edit-submit-button');
 
-const mapContainer = $('map-container');
 const mapButton = $('#map-button');
+const mapContainer = $('#map-container');
 
 const homeButton = $('#home-button');
 const overlay = $('#overlay');
@@ -57,11 +57,26 @@ const hideChat = () => {
 // Edit
 editButton.on('click', () => {
   hideChat();
-  editContainer.fadeIn(FADE_DURATION);
-})
+  showEdit();
+});
+
 cancelButton.on('click', () => {
+  hideEdit();
+});
+
+$('.edit-tab-button').on('click', function () {
+  $('.edit-field').hide();
+  const fieldID = $(this).attr('id').split('-')[0] + '-field';
+  $('#' + fieldID).show();
+});
+
+const showEdit = () => {
+  editContainer.css('display', 'grid');
+}
+
+const hideEdit = () => {
   editContainer.fadeOut(FADE_DURATION);
-})
+}
 
 // Map
 mapButton.on('click', () => {
@@ -70,7 +85,7 @@ mapButton.on('click', () => {
 
 // Home
 homeButton.on('click', () => {
-  overlay.fadeIn(WORLD_LINK_DURATION, () => {
+  overlay.fadeIn(HOME_LINK_DURATION, () => {
     window.location.href = "world.html"
   });
 })

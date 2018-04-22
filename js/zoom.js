@@ -18,13 +18,13 @@ const zoom = (tarPos) => {
     .to(endCamPos, isInFocus ? TWEEN_ZOOM_OUT : TWEEN_ZOOM_IN)
     .easing(TWEEN.Easing.Quartic.Out);
 
-  //Rotation animation setup
+  // Rotation animation setup
   const qm = new THREE.Quaternion();
   const curQuarternion = camera.quaternion.clone();
   let destRotation;
   if (isInFocus) { //use original camera rotation
     destRotation = camOriginalRotation;
-  } else { //find quaternion of camera pointing at sprite
+  } else { // find quaternion of camera pointing at sprite
     const tempCam = camera.clone();
     tempCam.lookAt(tarPos);
     destRotation = tempCam.quaternion;
@@ -40,7 +40,7 @@ const zoom = (tarPos) => {
     })
     .easing(TWEEN.Easing.Quartic.Out);
 
-  //Fog animation setup
+  // Fog animation setup
   const normalFog = {near: scene.fog.near, far: scene.fog.far,};
   const fogTween = new TWEEN.Tween(normalFog)
     .to(isInFocus
@@ -53,13 +53,19 @@ const zoom = (tarPos) => {
     })
     .easing(TWEEN.Easing.Quartic.Out);
 
-  //Tweening
+  // Camera animation setup
+  const normalCamNear = {near: camera.near}
+  // Tweening
   ongoingTween.forEach(tween => tween.stop());
   ongoingTween = [rotTween, posTween, fogTween];
   posTween.onStart(() => {
     rotTween.start();
     fogTween.start();
-  }).start();
+    toggleOnStart();
+
+  }).start().onComplete(() => {
+    toggleOnComplete();
+  });
 }
 
 const calcViewScalar = (viewObject) => {
@@ -73,25 +79,31 @@ const calcViewScalar = (viewObject) => {
   return visHeight() / (2*Math.tan(vFOV/2));
 }
 
-const toggle = () => {
+const toggleOnStart = () => {
   if (isInFocus) {
-    controls.rollSpeed = DEFAULT_ROLL_SPEED;
-    controls.movementSpeed = DEFAULT_MOVEMENT_SPEED;
     focusedSprite.material.fog = true;
-    focusedSprite.material.opacity = VISITED_SPRITE_OPACITY;
     camera.near = DEFAULT_NEAR;
+    toggleRaycaster(raycaster, true);
     hideZoomMenu();
-    isInFocus = false;
-  }else{
-    controls.rollSpeed = 0;
-    controls.movementSpeed = 0;
-    focusedSprite.material.color.set(0xffffff);
+  } else{
+    toggleControls(controls, false); // prevent glitchy camera during tween
+    toggleRaycaster(raycaster, false);
+    focusedSprite.material.opacity = 1; // in case transparent because previously visited
     focusedSprite.material.fog = false;
-    focusedSprite.material.opacity = 1;
-    camera.near = calcViewScalar(focusedSprite) * 0.8; //view zoomed object
-    $('html,body').css('cursor', 'default');
+    $('html, body').css('cursor', 'default');
     showZoomMenu();
-    isInFocus = true;
   }
   camera.updateProjectionMatrix();
+}
+
+const toggleOnComplete = () => {
+  if (isInFocus) {
+    focusedSprite.material.opacity = VISITED_SPRITE_OPACITY;
+    toggleControls(controls, true);
+    isInFocus = false;
+  } else {
+    camera.near = calcViewScalar(focusedSprite) * 0.8; // scale to view zoomed object
+    isInFocus = true;
+    focusedSprite.material.color.set(0xffffff); // undo raycast
+  }
 }

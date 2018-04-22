@@ -5,6 +5,7 @@
 		<title>DoWon</title>
 		<link rel="stylesheet" type="text/css" href="./css/normalize.css" >
 		<link rel="stylesheet" type="text/css" href="./css/zoom_menu.css" >
+		<link rel="stylesheet" type="text/css" href="./css/zoom_edit.css" >
 		<link rel="stylesheet" type="text/css" href="./css/universe.css" >
 		<link href="https://fonts.googleapis.com/css?family=Hi+Melody" rel="stylesheet" >
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
@@ -24,18 +25,35 @@
 		</div>
 
 		<div id="edit-container">
-			<div id="fields">
-				<div id="name-container">
-					<p>Name</p>
-					<input type="text">
+			<div id="edit-fields-container">
+				<div id="edit-highlighter"></div>
+				<div class="edit-field" id="name-field">
+					<input type="text" size="35" value="Hello!">
 				</div>
-				<div>Like</div>
-				<div>Dislike</div>
-				<div>Wish</div>
+				<div class="edit-field" id="like-field">
+					<input type="text" size="35" value="Like!">
+					<input type="text" size="35" value="Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!">
+					<input type="text" size="35" value="Like!">
+					<input type="text" size="35" value="Like!">
+					<input type="text" size="35" value="Like!">
+					<input type="text" size="35" value="Like!">
+					<input type="text" size="35" value="Like!">
+					<input type="text" size="35" value="Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!">
+					<input type="text" size="35" value="Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!Like!">
+					<input type="text" size="35" placeholder="Text here: ">
+				</div>
+				<div class="edit-field" id="dislike-field"></div>
+				<div class="edit-field" id="wish-field"></div>
 			</div>
-			<div id="actions">
-				<div id="cancel-button">Cancel</div>
-				<div id="submit-button">Submit</div>
+			<div id="edit-tab-button-container">
+				<div class="edit-tab-button" id="name-tab-button"></div>
+				<div class="edit-tab-button" id="like-tab-button"></div>
+				<div class="edit-tab-button" id="dislike-tab-button"></div>
+				<div class="edit-tab-button" id="wish-tab-button"></div>
+			</div>
+			<div id="edit-actions">
+				<div id="edit-cancel-button">Cancel</div>
+				<div id="edit-submit-button">Submit</div>
 			</div>
 		</div>
 
@@ -81,10 +99,12 @@
 		<script src="./js/lib/FlyControls.js"></script>
 		<script src="./js/lib/Tween.js"></script>
 
+		<script src="./js/data.js"></script>
 		<script src="./js/universe/constants.js"></script>
+		<script src="./js/statics.js"></script>
 
-		<script src="./js/universe/spherical_loading.js"></script>
-
+		<script src="./js/Asset.js"></script>
+		<script src="./js/universe/SphericalLoading.js"></script>
 		<script src="./js/zoom.js"></script>
 		<script src="./js/zoom_menu.js"></script>
 		<script src="./js/listeners.js"></script>

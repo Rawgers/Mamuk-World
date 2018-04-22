@@ -1,4 +1,4 @@
-class SphericalLoading{
+class SphericalLoading {
   constructor(scene, spawnRadius, viewRadius, initialSphereCenter, spawnCount) {
     this.scene = scene;
     this.spawnRadius = spawnRadius;
@@ -6,6 +6,8 @@ class SphericalLoading{
     this.prevSphereCenter = initialSphereCenter;
     this.spawnCount = spawnCount;
     this.loader = new THREE.TextureLoader();
+    this.mamukaGen = this.assetGen(data.mamuka);
+    this.mumuGen = this.assetGen(data.mumu);
   }
 
   checkSpawn(camPos) {
@@ -37,8 +39,9 @@ class SphericalLoading{
   }
 
   createSpriteMap(index, sprite) {
+    const image = this.getNextImage();
     this.loader.load(
-      './assets/mamuk_assets/' + ASSETS[index%ASSETS.length] + '.png',
+      image,
       (texture) => {
         const spriteMaterial = new THREE.SpriteMaterial({map: texture, fog: true});
         sprite.material = spriteMaterial;
@@ -64,11 +67,25 @@ class SphericalLoading{
     );
   }
 
-  removeSprites (camPos) {
+  removeSprites(camPos) {
     this.scene.children.forEach((sprite) => {
       if (camPos.distanceTo(sprite.position) > this.spawnRadius) {
         this.scene.remove(sprite);
       }
     });
+  }
+
+  * assetGen(data) {
+    const imgs = data.map(asset => asset.image);
+    let i = 0;
+    while (true) {
+      yield imgs[i++ % imgs.length];
+    }
+  }
+
+  getNextImage() {
+    return (Math.random() < ASSET_SPAWN_RATIO)
+      ? this.mamukaGen.next().value
+      : this.mumuGen.next().value;
   }
 }

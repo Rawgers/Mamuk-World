@@ -14,11 +14,11 @@ const setListeners = () => {
 
   //Toggle controls when mouse leaves window
   renderer.domElement.addEventListener('mouseleave', () => {
-    controls.rollSpeed = 0;
+    toggleControls(controls, false);
   });
   renderer.domElement.addEventListener('mouseenter', () => {
     if (!isInFocus){
-      controls.rollSpeed = DEFAULT_ROLL_SPEED;
+      toggleControls(controls, true);
     }
   });
 
@@ -43,13 +43,11 @@ const setListeners = () => {
       return;
     }else if (isInFocus){ //user desires to leave focus
       zoom(camOriginalPosition);
-      toggle();
     }else if (intersected){ //user desires to focus on one sprite
       focusedSprite = intersected.object;
       camOriginalPosition = camera.position.clone();
       camOriginalRotation = camera.quaternion.clone();
       zoom(focusedSprite.position);
-      toggle();
     }
   });
 

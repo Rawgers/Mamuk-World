@@ -1,5 +1,5 @@
 // Color
-const SCENE_BACKGROUND = 0x181817
+const SCENE_BACKGROUND = 0x050e10;
 const DEFAULT_SPRITE_COLOR = 0xffffff;
 const RAYCASTED_SPRITE_COLOR = 0xe57373;
 
@@ -9,8 +9,7 @@ const VISITED_SPRITE_OPACITY = 0.5;
 // Sprite
 const SPRITE_FRAME_DIMENSION = 7;
 const FOCUSED_SPRITE_WINDOW_RATIO = 0.7;
-const SPRITE_SPAWN_PER_LOAD = 500;
-const ASSETS = ['festival', 'jelly', 'joy', 'muse']
+const SPRITE_SPAWN_PER_LOAD = 750;
 
 // Camera & Fog & Raycaster
 const DEFAULT_NEAR = 3;
@@ -18,8 +17,10 @@ const DEFAULT_FAR = 50;
 const FOCUS_FOG_FAR = 1;
 const FOCUS_FOG_NEAR = 0;
 
+// Spawning
 const VIEW_RADIUS = DEFAULT_FAR * 0.5;
 const SPAWN_RADIUS = DEFAULT_FAR * 2.0;
+const ASSET_SPAWN_RATIO = 0.02;
 
 // Animation durations
 const TWEEN_ZOOM_IN = 1000;

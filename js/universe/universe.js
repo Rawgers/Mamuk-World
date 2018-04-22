@@ -7,14 +7,15 @@ scene.background = new THREE.Color(SCENE_BACKGROUND);
 scene.fog = new THREE.Fog(scene.background, DEFAULT_NEAR, DEFAULT_FAR);
 const regions = [];
 
-// Camera and camera controls
+// Camera
 const camera = new THREE.PerspectiveCamera(
   75, window.innerWidth/window.innerHeight, DEFAULT_NEAR, DEFAULT_FAR);
+
+// Camera Controls
 const clock = new THREE.Clock();
 const controls = new THREE.FlyControls(camera);
 controls.domElement = container;
-controls.movementSpeed = DEFAULT_MOVEMENT_SPEED;
-controls.rollSpeed = DEFAULT_ROLL_SPEED;
+toggleControls(controls, true);
 const initialSphereCenter = new THREE.Vector3().addVectors(
   camera.position, new THREE.Vector3(1000, 1000, 1000))
   //initialize far from camera to spawn on start
@@ -24,6 +25,7 @@ let timer;
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 container.appendChild(renderer.domElement);
+let requestID;
 
 // Raycaster
 const raycaster = new THREE.Raycaster();
@@ -37,7 +39,7 @@ const loadSphere = new SphericalLoading(
 
 // Animate and Render
 function animate() {
-  requestAnimationFrame(animate);
+  requestID = requestAnimationFrame(animate);
   render();
 }
 
@@ -45,15 +47,13 @@ function render() {
   controls.update(clock.getDelta());
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObjects(scene.children);
-  if (!isInFocus) {
-    loadSphere.checkSpawn(camera.position);
+  loadSphere.checkSpawn(camera.position);
 
-    if (intersected && intersected != intersects[0]) {
-      intersected.object.material.color.set(0xffffff);
-    }
-    $('html,body').css('cursor', intersects[0] ? 'pointer' : 'default');
-    intersects[0] && intersects[0].object.material.color.set(0xe57373);
+  if (intersected && intersected != intersects[0]) {
+    intersected.object.material.color.set(0xffffff);
   }
+  $('html,body').css('cursor', intersects[0] ? 'pointer' : 'default');
+  intersects[0] && intersects[0].object.material.color.set(0xe57373);
   intersected = intersects[0];
 
   TWEEN.update();
