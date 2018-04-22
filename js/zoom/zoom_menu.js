@@ -7,9 +7,6 @@ const shownText = $('#chat-shown-text');
 const hiddenText = $('#chat-hidden-text');
 
 const editButton = $('#edit-button');
-const editContainer = $('#edit-container');
-const cancelButton = $('#edit-cancel-button');
-const submitButton = $('#edit-submit-button');
 
 const mapButton = $('#map-button');
 const mapContainer = $('#map-container');
@@ -56,26 +53,15 @@ const hideChat = () => {
 
 // Edit
 editButton.on('click', () => {
-  hideChat();
   showEdit();
-});
-
-cancelButton.on('click', () => {
-  hideEdit();
-});
-
-$('.edit-tab-button').on('click', function () {
-  $('.edit-field').hide();
-  const fieldID = $(this).attr('id').split('-')[0] + '-field';
-  $('#' + fieldID).show();
-});
+})
 
 const showEdit = () => {
-  editContainer.css('display', 'grid');
+
 }
 
 const hideEdit = () => {
-  editContainer.fadeOut(FADE_DURATION);
+  
 }
 
 // Map

@@ -1,11 +1,10 @@
-const container = document.createElement( 'div' );
+const container = document.createElement('div');
 document.body.appendChild( container );
 
 // Scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(SCENE_BACKGROUND);
 scene.fog = new THREE.Fog(scene.background, DEFAULT_NEAR, DEFAULT_FAR);
-const regions = [];
 
 // Camera
 const camera = new THREE.PerspectiveCamera(
@@ -25,7 +24,6 @@ let timer;
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 container.appendChild(renderer.domElement);
-let requestID;
 
 // Raycaster
 const raycaster = new THREE.Raycaster();
@@ -39,7 +37,7 @@ const loadSphere = new SphericalLoading(
 
 // Animate and Render
 function animate() {
-  requestID = requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
   render();
 }
 

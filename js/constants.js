@@ -34,3 +34,6 @@ const DEFAULT_ROLL_SPEED = Math.PI/6;
 const DEFAULT_MOVEMENT_SPEED = 30;
 const ZOOM_IN_DURATION = 800;
 const ZOOM_OUT_DURATION = 500;
+
+// Constellation
+const STAR_DISTANCE = 5;

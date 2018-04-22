@@ -75,7 +75,7 @@ const calcViewScalar = (viewObject) => {
       : viewObject.scale.x/FOCUSED_SPRITE_WINDOW_RATIO/camera.aspect;
   }
   const isBoundedByHeight = viewObject.scale.y/window.innerHeight >= viewObject.scale.x/window.innerWidth;
-  const vFOV = camera.fov * Math.PI/180;
+  const vFOV = THREE.Math.degToRad(camera.fov);
   return visHeight() / (2*Math.tan(vFOV/2));
 }
 
