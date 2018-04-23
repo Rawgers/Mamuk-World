@@ -8,8 +8,8 @@ scene.background = new THREE.Color(SCENE_BACKGROUND);
 
 // Camera
 const camera = new THREE.PerspectiveCamera(
-  75, window.innerWidth/window.innerHeight, DEFAULT_NEAR, DEFAULT_FAR);
-camera.position.z = 10;
+  75, window.innerWidth/window.innerHeight, DEFAULT_NEAR, 1000);
+camera.position.z = 25;
 
 // Camera Controls
 const clock = new THREE.Clock();
@@ -22,15 +22,27 @@ const initialSphereCenter = new THREE.Vector3().addVectors(
 let timer;
 
 // Renderer
-// const renderer = new THREE.WebGLRenderer({antialias: true});
-// renderer.setSize(window.innerWidth, window.innerHeight);
-// container.appendChild(renderer.domElement);
+const renderer = new THREE.WebGLRenderer({antialias: true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+container.appendChild(renderer.domElement);
 
 const shortList = ['', 'hi', 'bye'];
 const textList = ['', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
   'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
-  'pls', 'plz', 'plsplspls', 'work pls'];
-const constellation = new Constellation(textList, scene);
+  'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
+    'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
+    'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
+      'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
+      'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
+        'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
+        'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
+          'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
+          'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
+            'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
+            'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
+              'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
+              'pls', 'plz', 'plsplspls', 'work pls', '', '', ''];
+const constellation = new Constellation(textList, data.mamuka[0], scene);
 
 // Raycaster
 // const raycaster = new THREE.Raycaster();
@@ -61,7 +73,7 @@ function render() {
   // intersects[0] && intersects[0].object.material.color.set(0xe57373);
   // intersected = intersects[0];
 
-  // TWEEN.update();
+  TWEEN.update();
   renderer.render(scene, camera);
 }
 
