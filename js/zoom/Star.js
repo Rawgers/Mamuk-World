@@ -1,24 +1,34 @@
 class Star {
   constructor(scene) {
     this.scene = scene;
-    this.childStars = [];
+    this.childrenStars = [];
   }
 
   addStar(childStar) {
-    if (childStar instanceof ChildStar) { // for createConstellation
-      this.childStars.push(childStar);
-    } else if (typeof text === 'string') { // for user input
-      this.childStars.push(new ChildStar(childStar));
-    }
+    this.childrenStars.push(childStar);
   }
 
-  removeStar(star) {
+  removeStar() {
+    // remove connection to parent
+    for (let i = 0; i < star.parent.childrenStars.length(); i++) {
+      if (child === star) {
+        star.parent.childrenStars.splice(i, 1);
+      }
+    }
+    this.parent = null;
 
+    // remove connection to children
+    for (let child of childrenStars) {
+      child.parent = undefined;
+    }
+    this.childrenStars = null;
+    
+    this.removeFromScene();
   }
 
   showStar() {
     if(this.isLeaf()) {return;}
-    this.childStars.forEach(star => star.tweenLines());
+    this.childrenStars.forEach(star => star.tweenLines());
   }
 
   tweenLines() {
@@ -33,7 +43,7 @@ class Star {
   }
 
   isLeaf() {
-    return this.childStars == true;
+    return this.childrenStars == true;
   }
 }
 
@@ -66,6 +76,8 @@ class ChildStar extends Star {
     this.line;
     this.lineEnd; // used in Tweening
     this.addToScene(allStars);
+    this.bindParent(allStars);
+    this.calculateConstellationLines();
   }
 
   addToScene(allStars) {
@@ -75,6 +87,14 @@ class ChildStar extends Star {
     this.sprite.position.set(this.position.x, this.position.y, this.position.z);
     this.sprite.visible = false;
     this.scene.add(this.sprite);
+  }
+
+  removeFromScene() {
+    this.scene.remove(this.sprite);
+    this.scene.remove(this.line);
+  }
+
+  bindParent(allStars) {
     if (allStars.length < 4) {
       this.parent = allStars[0];
     } else {
@@ -85,7 +105,6 @@ class ChildStar extends Star {
       });
     }
     this.parent.addStar(this);
-    this.calculateConstellationLines();
   }
 
   calculateConstellationLines() {
