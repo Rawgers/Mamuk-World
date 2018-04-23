@@ -22,24 +22,8 @@ class Star {
       child.parent = undefined;
     }
     this.childrenStars = null;
-    
+
     this.removeFromScene();
-  }
-
-  showStar() {
-    if(this.isLeaf()) {return;}
-    this.childrenStars.forEach(star => star.tweenLines());
-  }
-
-  tweenLines() {
-    const lineTween = new TWEEN.Tween(this.line.geometry.vertices[1])
-      .to(this.lineEnd, 300)
-      .onUpdate(() => {this.line.geometry.verticesNeedUpdate = true;})
-      .onComplete(() => {
-        this.sprite.visible = true;
-        this.showStar();
-      })
-      .start();
   }
 
   isLeaf() {
@@ -63,6 +47,10 @@ class RootStar extends Star {
     this.sprite.scale.set(8, 8, 0);
     this.radius = this.sprite.scale.x / 2 * Math.sqrt(2);
     scene.add(this.sprite);
+  }
+
+  showStar() {
+    this.childrenStars.forEach(childStar => childStar.tweenLines());
   }
 }
 
@@ -125,6 +113,17 @@ class ChildStar extends Star {
     // Tween lineGeometry.vertices[1] to this.lineEnd later
     this.line = new THREE.Line(lineGeometry, ChildStar.lineMaterial);
     scene.add(this.line);
+  }
+
+  tweenLines() {
+    const lineTween = new TWEEN.Tween(this.line.geometry.vertices[1])
+      .to(this.lineEnd, 300)
+      .onUpdate(() => {this.line.geometry.verticesNeedUpdate = true;})
+      .onComplete(() => {
+        this.sprite.visible = true;
+        this.childrenStars.forEach(childStar => childStar.tweenLines());
+      })
+      .start();
   }
 }
 

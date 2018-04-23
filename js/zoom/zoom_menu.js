@@ -57,11 +57,11 @@ editButton.on('click', () => {
 })
 
 const showEdit = () => {
-
+  
 }
 
 const hideEdit = () => {
-  
+
 }
 
 // Map

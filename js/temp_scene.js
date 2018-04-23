@@ -29,7 +29,17 @@ container.appendChild(renderer.domElement);
 const shortList = ['', 'hi', 'bye'];
 const textList = ['', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
   'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
-  'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy'];
+  'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy','', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
+    'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
+    'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy','', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
+      'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
+      'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy','', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
+        'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
+        'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy','', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
+          'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
+          'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy','', 'hi', 'bye', 'poop', 'happy', 'excited', 'genki', 'desu', 'deyasu',
+            'glasses', 'nose', 'computer', 'breadth-first search tree', 'keyboard', 'please',
+            'pls', 'plz', 'plsplspls', 'work pls', '', '', '','', 'hi', 'bye', 'poop', 'happy'];
 const constellation = new Constellation(textList, data.mamuka[0], scene);
 
 // Raycaster

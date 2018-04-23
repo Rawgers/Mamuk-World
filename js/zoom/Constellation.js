@@ -31,7 +31,7 @@ class Constellation { // Constellation represented by tree data structure
     this.root.showStar();
   }
 
-  randomizeBranches() {
+  permuteTexts() {
     /* Fisher-Yates (Knuth) Shuffle:
     https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array*/
     let currentIndex = this.allTexts.length();
