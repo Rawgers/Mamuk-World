@@ -36,4 +36,8 @@ const ZOOM_IN_DURATION = 800;
 const ZOOM_OUT_DURATION = 500;
 
 // Constellation
-const STAR_DISTANCE = 5;
+const CONSTELLATION_COLOR = {
+  like: 0xffd3d3,
+  dislike: 0xfffbb7,
+  wish: 0xd3e2ff
+};

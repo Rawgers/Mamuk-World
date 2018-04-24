@@ -50,6 +50,4 @@ const setListeners = () => {
       zoom(focusedSprite.position);
     }
   });
-
-  //Show buttons
 }

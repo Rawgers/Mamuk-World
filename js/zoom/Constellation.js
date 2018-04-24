@@ -1,10 +1,12 @@
 class Constellation { // Constellation represented by tree data structure
-  constructor(allTexts, mamuka, scene) {
+  constructor(scene, mamuka, type) {
     this.scene = scene;
+    this.type = type;
+    this.color = CONSTELLATION_COLOR[this.type]
     this.root = new RootStar(this.scene, mamuka);
     this.allStars = [this.root];
     this.layerThickness = 5;
-    this.createConstellation(allTexts, 0);
+    this.createConstellation(this.defineLength(30), 0);
     this.drawConstellation();
   }
 
@@ -18,7 +20,7 @@ class Constellation { // Constellation represented by tree data structure
     const layerSectionAngle = (Math.PI * 2) / starCount;
     for (let i = 0; allTexts.length > 0 && i < starCount; i++) {
       const starPosition = this.randomizeStarPosition(i, layerInnerRadius, layerSectionAngle);
-      const star = new ChildStar(allTexts[0], this.scene, starPosition, this.allStars);
+      const star = new ChildStar(this.scene, allTexts[0], starPosition, this.color, this.root, this.allStars);
       star.addToScene(this.allStars);
       this.allStars.push(star);
       remainingText.splice(0, 1);
@@ -29,6 +31,18 @@ class Constellation { // Constellation represented by tree data structure
 
   drawConstellation() {
     this.root.showStar();
+  }
+
+  closeConstellation() {
+    this.root.hideStar();
+  }
+
+  defineLength(n) {
+    const textList = [];
+    for (let i = 0; i < n; i++) {
+      textList.push('');
+    }
+    return textList;
   }
 
   permuteTexts() {
@@ -61,7 +75,7 @@ class Constellation { // Constellation represented by tree data structure
   }
 
   addNewStar(text, position) {
-    const newStar = new ChildStar(text, this.scene, position, this.allStars);
+    const newStar = new ChildStar(this.scene, text, position, this.color, this.root, this.allStars);
     this.allStars.push(newStar);
   }
 
@@ -78,5 +92,14 @@ class Constellation { // Constellation represented by tree data structure
       child.bindParent();
       child.calculateConstellationLines();
     })
+  }
+
+  getStarBySprite(sprite) {
+    for (const star of this.allStars) {
+      if (star.sprite === sprite) {
+        return star;
+      }
+    }
+    return null;
   }
 }
