@@ -16,7 +16,7 @@ class Constellation { // Constellation represented by tree data structure
     }
     const remainingText = allTexts;
     const starCount = 3 + layerIndex * 6;
-    const layerInnerRadius = this.root.radius + (this.layerThickness * layerIndex);
+    const layerInnerRadius = (this.root.radius * 1.4) + (this.layerThickness * layerIndex);
     const layerSectionAngle = (Math.PI * 2) / starCount;
     for (let i = 0; allTexts.length > 0 && i < starCount; i++) {
       const starPosition = this.randomizeStarPosition(i, layerInnerRadius, layerSectionAngle);

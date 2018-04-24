@@ -11,51 +11,20 @@ class Star {
 
   removeStar() {
     // remove connection to parent
-    for (let i = 0; i < star.parent.childrenStars.length(); i++) {
-      if (child === star) {
-        star.parent.childrenStars.splice(i, 1);
+    for (let i = 0; i < this.parent.childrenStars.length(); i++) {
+      if (this.parent.childrenStars[i] === star) {
+        this.parent.childrenStars.splice(i, 1);
       }
     }
     this.parent = null;
 
     // remove connection to children
-    for (let child of childrenStars) {
+    for (let child of this.childrenStars) {
       child.parent = undefined;
     }
     this.childrenStars = null;
 
     this.removeFromScene();
-  }
-
-  isLeaf() {
-    return this.childrenStars == true;
-  }
-}
-
-class RootStar extends Star {
-  constructor(scene, mamuka) {
-    super(scene, null);
-    this.position = new THREE.Vector3();
-    this.mamuka = mamuka;
-    this.radius;
-    this.sprite;
-    this.addToScene();
-  }
-
-  addToScene() {
-    const texture = new THREE.TextureLoader().load(this.mamuka.image);
-    this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: texture}));
-    this.sprite.scale.set(8, 8, 0);
-    this.radius = this.sprite.scale.x / 2 * Math.sqrt(2);
-    scene.add(this.sprite);
-  }
-
-  showStar() {
-    this.childrenStars.forEach(childStar => childStar.tweenLinesShow());
-  }
-
-  hideStar() {
-    this.childrenStars.forEach(childStar => childStar.tweenLinesHide());
   }
 }
 
@@ -124,13 +93,15 @@ class ChildStar extends Star {
       lineGeometry,
       new THREE.LineBasicMaterial({color: this.color})
     );
-    scene.add(this.line);
+    this.scene.add(this.line);
   }
 
   tweenLinesShow() {
     const lineTween = new TWEEN.Tween(this.line.geometry.vertices[1])
       .to(this.lineEnd, 300)
-      .onUpdate(() => {this.line.geometry.verticesNeedUpdate = true;})
+      .onUpdate(() => {
+        this.line.geometry.verticesNeedUpdate = true;
+      })
       .onComplete(() => {
         this.sprite.visible = true;
         this.childrenStars.forEach(childStar => childStar.tweenLinesShow());
@@ -138,7 +109,7 @@ class ChildStar extends Star {
       .start();
   }
 
-  tweeLinesHide() {
+  tweenLinesHide() {
 
   }
 
@@ -161,3 +132,31 @@ class ChildStar extends Star {
 }
 
 ChildStar.texture = new THREE.TextureLoader().load('./assets/star.png');
+
+class RootStar extends Star {
+  constructor(scene, mamuka) {
+    super(scene, null);
+    this.position = new THREE.Vector3();
+    this.mamuka = mamuka;
+    this.radius;
+    this.sprite;
+    this.addToScene();
+  }
+
+  addToScene() {
+    const texture = new THREE.TextureLoader().load(this.mamuka.image);
+    this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: texture}));
+    this.sprite.scale.set(ROOT_STAR_DIM, ROOT_STAR_DIM, 0);
+    this.radius = this.sprite.scale.x / 2 * Math.sqrt(2);
+    console.log(this.sprite);
+    this.scene.add(this.sprite);
+  }
+
+  showStar() {
+    this.childrenStars.forEach(childStar => childStar.tweenLinesShow());
+  }
+
+  hideStar() {
+    this.childrenStars.forEach(childStar => childStar.tweenLinesHide());
+  }
+}

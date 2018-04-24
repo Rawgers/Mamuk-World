@@ -1,6 +1,3 @@
-const container = document.createElement('div');
-document.body.appendChild( container );
-
 // Scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(SCENE_BACKGROUND);
@@ -8,19 +5,18 @@ scene.background = new THREE.Color(SCENE_BACKGROUND);
 // Camera
 const camera = new THREE.PerspectiveCamera(
   75, window.innerWidth/window.innerHeight, DEFAULT_NEAR, 1000);
-camera.position.z = 40;
+camera.position.z = 30;
 
 // Camera Controls
 const clock = new THREE.Clock();
 const controls = new THREE.FlyControls(camera);
-controls.domElement = container;
 toggleControls(controls, true);
 let timer;
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
-container.appendChild(renderer.domElement);
+document.body.appendChild(renderer.domElement);
 
 // Constellation
 const constellation = new Constellation(scene, data.mamuka[0], 'like');
