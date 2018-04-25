@@ -1,7 +1,8 @@
 class ZoomManager {
-  constructor(scene, camera) {
+  constructor(scene, camera, raycaster) {
     this.scene = scene;
     this.camera = camera;
+    this.raycaster = raycaster;
 
     this.isInFocus = false;
     this.cameraOriginalPosition;
@@ -100,11 +101,9 @@ class ZoomManager {
     if (this.isInFocus) {
       this.focusedSprite.material.fog = true;
       this.camera.near = DEFAULT_NEAR;
-      View.currentView.toggleRaycaster(true);
       hideZoomMenu();
     } else{
       View.currentView.toggleCameraControls(false); // prevent glitchy camera during tween
-      View.currentView.toggleRaycaster(false);
       this.focusedSprite.material.opacity = 1; // in case transparent because previously visited
       this.focusedSprite.material.fog = false;
       $('html, body').css('cursor', 'default');

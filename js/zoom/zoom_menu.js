@@ -64,10 +64,11 @@ const showEdit = () => {
     data.mamuka[0]
   );
   editView.drawConstellation('like');
+  editView.camera.lookAt(editView.constellation.root.position);
 }
 
 const hideEdit = () => {
-
+  View.currentView = universeView;
 }
 
 // Map

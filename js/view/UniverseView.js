@@ -5,7 +5,7 @@ class UniverseView extends View {
     this.loadSphere;
 
     this.init();
-    this.zoomManager = new ZoomManager(this.scene, this.camera);
+    this.zoomManager = new ZoomManager(this.scene, this.camera, this.raycaster);
 
     this.setRenderFunction(this.render);
     this.wheelTimer;
@@ -42,27 +42,26 @@ class UniverseView extends View {
   }
 
   defineListeners() {
-    // Resize window
-    const windowResizeListener = () => {
+    // window resize
+    const resizeListener = () => {
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
+      View.renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+
+    // mouse leave/enter
+    const mouseLeaveListener = () => {
+      this.toggleCameraControls(false);
+    };
+
+    const mouseEnterListener = () => {
+      this.zoomManager.isInFocus || this.toggleCameraControls(true);
     };
 
     // for raycaster's mouse position
     const raymouseListener = event => {
       this.raymouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       this.raymouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    };
-
-    //Toggle controls when mouse leaves window
-    const windowLeaveListener = () => {
-      this.toggleCameraControls(false);
-    };
-    const windowEnterListener = () => {
-      if (!this.isInFocus){
-        this.toggleCameraControls(true);
-      }
     };
 
     // Scroll to move forward/backward
@@ -82,7 +81,9 @@ class UniverseView extends View {
 
     // Zoom listener
     const spriteZoomListener = () => {
-      if (this.zoomManager.isInFocus && this.intersected && this.intersected.object === focusedSprite) {
+      if (this.zoomManager.isInFocus
+        && this.intersected
+        && this.intersected.object === this.zoomManager.focusedSprite) {
         // cannot zoom out when hovered over focusedSprite
         return;
       } else if (this.zoomManager.isInFocus){ // user desires to leave focus
@@ -96,13 +97,14 @@ class UniverseView extends View {
         this.zoomManager.zoom();
       };
     };
+
     return [
-      {type: 'resize', listener: windowResizeListener},
-      {type: 'mousemove', listener: raymouseListener},
-      {type: 'mouseleave', listener: windowLeaveListener},
-      {type: 'mouseenter', listener: windowEnterListener},
-      {type: 'wheel', listener: wheelListener},
-      {type: 'mousedown', listener: spriteZoomListener},
+      {target: View.renderer.domElement, type: 'mousemove', listener: raymouseListener},
+      {target: View.renderer.domElement, type: 'wheel', listener: wheelListener},
+      {target: View.renderer.domElement, type: 'mousedown', listener: spriteZoomListener},
+      {target: window, type: 'resize', listener: resizeListener},
+      {target: View.renderer.domElement, type: 'mouseleave', listener: mouseLeaveListener},
+      {target: View.renderer.domElement, type: 'mouseenter', listener: mouseEnterListener}
     ];
   }
 }

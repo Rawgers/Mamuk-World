@@ -6,7 +6,7 @@ class Constellation { // Constellation represented by tree data structure
     this.root = new RootStar(this.scene, mamuka);
     this.allStars = [this.root];
     this.layerThickness = 5;
-    this.createConstellation(this.defineLength(30), 0);
+    this.createConstellation(this.defineLength(15), 0);
     this.drawConstellation();
   }
 

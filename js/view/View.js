@@ -63,7 +63,7 @@ class View {
     }
   }
 
-  toggleRaycaster(toBeActive) {
+  toggleRaycaster(toBeActive) { // perhaps delete this method
     this.raycaster.near = toBeActive ? DEFAULT_NEAR : 0;
     this.raycaster.far = toBeActive ? DEFAULT_FAR : 0;
   }
@@ -76,7 +76,7 @@ class View {
     // listeners: [{type: 'mousedown', listener: function}, ...]
     eventListeners.forEach(eventListener => {
       this.eventListeners.push(eventListener);
-      View.renderer.domElement.addEventListener(
+      eventListener.target.addEventListener(
         eventListener.type,
         event => eventListener.listener(event)
       );
@@ -85,6 +85,6 @@ class View {
 }
 
 View.currentView = null;
-View.renderer = new THREE.WebGLRenderer();
+View.renderer = new THREE.WebGLRenderer({antialias: true});
 View.renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(View.renderer.domElement);

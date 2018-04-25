@@ -51,7 +51,8 @@ class ChildStar extends Star {
       new THREE.SpriteMaterial({map: ChildStar.texture, color: this.color})
     );
     this.sprite.position.set(this.position.x, this.position.y, this.position.z);
-    this.sprite.visible = false;
+    this.sprite.transparent = true;
+    this.sprite.material.opacity = 0; // Tween to 1
     this.scene.add(this.sprite);
   }
 
@@ -97,14 +98,23 @@ class ChildStar extends Star {
   }
 
   tweenLinesShow() {
+    const intermediateOpacity = {opacity: this.sprite.material.opacity};
+    const opacityTween = new TWEEN.Tween(intermediateOpacity)
+      .to({opacity: 1}, 250)
+      .onUpdate(() => {
+        this.sprite.material.opacity = intermediateOpacity.opacity;
+      })
+      .onComplete(() => {
+        this.childrenStars.forEach(childStar => childStar.tweenLinesShow());
+      });
+
     const lineTween = new TWEEN.Tween(this.line.geometry.vertices[1])
       .to(this.lineEnd, 300)
       .onUpdate(() => {
         this.line.geometry.verticesNeedUpdate = true;
       })
       .onComplete(() => {
-        this.sprite.visible = true;
-        this.childrenStars.forEach(childStar => childStar.tweenLinesShow());
+        opacityTween.start();
       })
       .start();
   }
@@ -124,6 +134,7 @@ class ChildStar extends Star {
     bobUpTween.start();
     this.currentBobTweens.push(bobUpTween, BobDownTween);
   }
+
   stopBob() {
     this.currentBobTweens.forEach(bobTween => bobTween.stop())
     this.sprite.position.set(this.position.x, this.position.y, this.position.z);
@@ -146,9 +157,8 @@ class RootStar extends Star {
   addToScene() {
     const texture = new THREE.TextureLoader().load(this.mamuka.image);
     this.sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: texture}));
-    this.sprite.scale.set(ROOT_STAR_DIM, ROOT_STAR_DIM, 0);
+    this.sprite.scale.set(ROOT_STAR_DIM, ROOT_STAR_DIM, 1);
     this.radius = this.sprite.scale.x / 2 * Math.sqrt(2);
-    console.log(this.sprite);
     this.scene.add(this.sprite);
   }
 
