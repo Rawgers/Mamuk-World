@@ -30,13 +30,13 @@ const HOME_LINK_DURATION = 600;
 const TYPEWRITE_INTERVAL = 10;
 
 // Controls
-const DEFAULT_ROLL_SPEED = Math.PI/6;
+const DEFAULT_ROLL_SPEED = Math.PI / 6;
 const DEFAULT_MOVEMENT_SPEED = 30;
 const ZOOM_IN_DURATION = 800;
 const ZOOM_OUT_DURATION = 500;
 
 // Constellation & Stars
-const ROOT_STAR_DIM = 8;
+const MAMUKA_SPRITE_RADIUS = 4;
 const CONSTELLATION_COLOR = {
   like: 0xffd3d3,
   dislike: 0xfffbb7,

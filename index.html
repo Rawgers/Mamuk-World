@@ -22,6 +22,19 @@
 			<span id="chat-shown-text"></span>
 			<span id="chat-hidden-text"></span>
 		</div>
+		
+		<div id="edit-profile-button-container">
+			<i id="like-button" class="far fa-smile"></i>
+			<i id="dislike-button" class="far fa-frown"></i>
+			<i id="wish-button" class="far fa-star"></i>
+		</div>
+		
+		<!--<div id="edit-speech-balloon">Hello World!</div>-->
+		
+		<div id="edit-input-container">
+			<span id="edit-input-prefix"></span>
+			<input id="edit-input" type="text">
+		</div>
 
 		<div id="home-link-overlay"></div>
 
@@ -59,26 +72,31 @@
 				<img src="assets/world_thumbnail/bubble.png" />
 			</div> -->
 		</div>
-
-		<script src="./js/lib/jquery.js"></script>
-		<script src="./js/lib/three.js"></script>
+		
+		<!-- Libraries -->
+		<script src="./js/lib/jquery-3.3.1.min.js"></script>
+		<script src="./js/lib/three.min.js"></script>
 		<script src="./js/lib/FlyControls.js"></script>
 		<script src="./js/lib/Tween.js"></script>
-		<script src="./js/lib/Queue.js"></script>
 
-		<script src="./js/data/data.js"></script>
+		<!-- Data -->
 		<script src="./js/constants.js"></script>
-
+		<script src="./js/data/data.js"></script>
 		<!-- <script src="./js/Asset.js"></script> -->
+		
+		<script src="./js/utility.js"></script>
 
+		<!-- Classes -->
 		<script src="./js/universe/SphericalLoading.js"></script>
 		<script src="./js/zoom/ZoomManager.js"></script>
 		<script src="./js/zoom/Star.js"></script>
 		<script src="./js/zoom/Constellation.js"></script>
+		
+		<!-- Views -->
 		<script src="./js/view/View.js"></script>
 		<script src="./js/view/UniverseView.js"></script>
 		<script src="./js/view/EditView.js"></script>
+		
 		<script src="./js/zoom/zoom_menu.js"></script>
-
 	</body>
 </html>

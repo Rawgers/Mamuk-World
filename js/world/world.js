@@ -1,65 +1,43 @@
-const container = document.createElement( 'div' );
-document.body.appendChild( container );
+/* global THREE */
 
-// Scene
+// Scene, Camera, Renderer
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(SCENE_BACKGROUND);
-scene.fog = new THREE.Fog(scene.background, DEFAULT_FOG_NEAR, DEFAULT_FAR);
-const regions = [];
-
-// Camera and camera controls
-const camera = new THREE.PerspectiveCamera(
-  75, window.innerWidth/window.innerHeight, DEFAULT_NEAR, DEFAULT_FAR);
-const clock = new THREE.Clock();
-const controls = new THREE.FirstPersonControls(camera, container);
-controls.domElement = container;
-controls.movementSpeed = DEFAULT_MOVEMENT_SPEED;
-controls.rollSpeed = DEFAULT_ROLL_SPEED;
-const initialSphereCenter = new THREE.Vector3().addVectors(
-  camera.position, new THREE.Vector3(1000, 1000, 1000))
-  //initialize far from camera to spawn on start
-let timer;
-
-// Renderer
+//scene.background = new THREE.TextureLoader().load('img/universe_background.jpg');
+//scene.fog = new THREE.Fog(0x666666/*scene.background*/, 3, DEFAULT_FOG_FAR);
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
-container.appendChild(renderer.domElement);
+document.body.appendChild(renderer.domElement);
 
-// Raycaster
-const raycaster = new THREE.Raycaster();
-raycaster.near = DEFAULT_NEAR;
-raycaster.far = 50;
-const mouse = new THREE.Vector2();
+// FirstPersonControls
+const firstPersonControls = new THREE.FirstPersonControls(camera);
+const clock = new THREE.Clock();
+const toggleFirstPersonControls = activate => {
+	firstPersonControls.movementSpeed = activate ? FLY_CONTROLS_MOVEMENT_SPEED : 0;
+	firstPersonControls.lookSpeed = activate ? FLY_CONTROLS_ROLL_SPEED / 2 : 0;
+};
+toggleFirstPersonControls(true);
 
-const world = new THREE.Mesh(
+// Create the world background
+const worldBackgroundTexture = new THREE.TextureLoader().load('test.png');
+const worldBackground = new THREE.Mesh(
   new THREE.SphereGeometry(50, 32, 32),
-  new THREE.MeshBasicMaterial(side: THREE.BackSide)
+  new THREE.MeshBasicMaterial({map: worldBackgroundTexture, side: THREE.BackSide})
 );
 
+console.log(worldBackground.position);
+scene.add(worldBackground);
+
 // Animate and Render
-function animate() {
-  requestAnimationFrame(animate);
-  render();
-}
+const animate = () => {
+	requestAnimationFrame(animate);
+	render();
+};
 
-function render() {
-  controls.update(clock.getDelta());
+const render = () => {
+  firstPersonControls.update(clock.getDelta());
+	renderer.render(scene, camera);
+};
 
-  if (!isInFocus) {
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(scene.children);
-    if (intersected && intersected != intersects[0]) {
-      // intersected.object.material.color.set(0xffffff);
-      $('html,body').css('cursor', 'pointer');
-    }else{
-      $('html,body').css('cursor', 'default');
-    }
-    intersected = intersects[0];
-    // intersected && intersected.object.material.color.set(0xe57373);
-  }
-  TWEEN.update();
-  renderer.render(scene, camera);
-}
-
-setListeners();
 animate();
