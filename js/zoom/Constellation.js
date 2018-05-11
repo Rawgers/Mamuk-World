@@ -20,7 +20,7 @@ class Constellation { // Constellation represented by tree data structure
     }
     const remainingText = allTexts;
     const starCount = 3 + layerIndex * 6;
-    const layerInnerRadius = MAMUKA_SPRITE_RADIUS * 1.4 + (this.layerThickness * layerIndex);
+    const layerInnerRadius = EDIT_MAMUKA_SPRITE_RADIUS * 1.4 + (this.layerThickness * layerIndex);
     const layerSectionAngle = (Math.PI * 2) / starCount;
     for (let i = 0; allTexts.length > 0 && i < starCount; i++) {
       const starPosition = this.randomizeStarPosition(i, layerInnerRadius, layerSectionAngle);
@@ -34,13 +34,29 @@ class Constellation { // Constellation represented by tree data structure
   }
   
   draw() {
-		this.rootStar.show();
+		//this.rootStar.show();
+		this.allStars.forEach(star => star.scatter());
 	}
 	
 	close(callback) {
 		// Collect the leaves
-		const leaves = this.allStars.filter(star => star.isLeaf());
-		leaves.forEach(leaf => leaf.hide(callback));
+		/*const leaves = this.allStars.filter(star => star.isLeaf());
+		leaves.forEach(leaf => leaf.hide(callback));*/
+		const starsToFade = this.allStars.filter(star => star instanceof ChildStar);
+		const intermediateOpacity = {opacity: 1};
+		const fadeOutTween = new TWEEN.Tween(intermediateOpacity)
+		  .to({opacity: 0}, 300)
+		  .onUpdate(() => {
+		    starsToFade.forEach(star => {
+		      star.sprite.material.opacity = intermediateOpacity.opacity;
+		      star.line.material.opacity = intermediateOpacity.opacity;
+		    });
+		  })
+		  .onComplete(() => {
+		    starsToFade.forEach(star => star.removeFromScene());
+		    callback();
+		  })
+		  .start();
 	}
 
   defineLength(n) {

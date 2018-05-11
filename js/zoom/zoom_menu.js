@@ -94,7 +94,7 @@ const showEdit = () => {
     new THREE.Scene(),
     new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000),
     null,
-    data.mamuka[0]
+    data.mamuka[2]
   );
 };
 

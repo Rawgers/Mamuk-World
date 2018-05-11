@@ -40,13 +40,19 @@ class RootStar extends Star {
     this.position = new THREE.Vector3();
   }
   
-  show() {
+  /*show() {
 		this.childrenStars.forEach(childStar => childStar.show());
+	}*/
+	
+	scatter() {
+	  setTimeout(() => {
+	    this.childrenStars.forEach(childStar => childStar.showLineTween());
+	  }, 600);
 	}
 	
-	hide(callback) {
+	/*hide(callback) {
 		callback && callback();
-	}
+	}*/
 }
 
 class ChildStar extends Star {
@@ -66,16 +72,18 @@ class ChildStar extends Star {
 
     this.addToScene(allStars);
     this.bindParent(allStars);
-    this.calculateConstellationLines();
+    this.createConstellationLine();
   }
 
   addToScene(allStars) {
     this.sprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({map: ChildStar.texture, color: this.color})
+      new THREE.SpriteMaterial({map: ChildStar.texture, color: 0xffffff/*this.color*/})
     );
-    this.sprite.position.set(this.position.x, this.position.y, this.position.z);
-    this.sprite.material.opacity = 0;
-    this.sprite.transparent = true;
+    //this.sprite.position.set(this.position.x, this.position.y, this.position.z);
+    this.sprite.position.set(0, 0, 0);
+    this.sprite.scale.set(2.5, 2.5, 0);
+    //this.sprite.material.opacity = 0;
+    this.sprite.material.transparent = true;
     this.scene.add(this.sprite);
   }
 
@@ -99,13 +107,12 @@ class ChildStar extends Star {
     this.parent.addStar(this);
   }
 
-  calculateConstellationLines() {
-    const lineGeometry = new THREE.Geometry();
+  createConstellationLine() {
     const start = this.parent.position.clone();
-    const end = this.sprite.position.clone();
+    const end = this.position.clone();
     const distanceVector = new THREE.Vector3().subVectors(end, start);
     const startCorrection = distanceVector.clone().normalize().multiplyScalar(
-      this.parent instanceof RootStar ? MAMUKA_SPRITE_RADIUS : 0.3
+      this.parent instanceof RootStar ? EDIT_MAMUKA_SPRITE_RADIUS : 0.3
     );
     const endCorrection = distanceVector.clone().normalize().multiplyScalar(0.3);
     const correction = new THREE.Vector3()
@@ -113,22 +120,25 @@ class ChildStar extends Star {
     const correctedStart = new THREE.Vector3().addVectors(start, startCorrection);
     const correctedEnd = new THREE.Vector3().subVectors(end, endCorrection);
     this.lineEnd = correctedEnd;
+    const lineGeometry = new THREE.Geometry();
     lineGeometry.vertices.push(correctedStart.clone(), correctedStart.clone());
     // Tween lineGeometry.vertices[1] to this.lineEnd later
     this.line = new THREE.Line(
       lineGeometry,
-      new THREE.LineBasicMaterial({color: this.color})
-    );
+      new THREE.LineDashedMaterial({color: this.color, dashSize: 0.3, gapSize: 0.2})
+    )
+    this.line.computeLineDistances();
+    this.line.material.transparent = true;
     this.scene.add(this.line);
   }
   
-  show() {
+  /*show() {
 		this.tweenVisibility(true, () => {
 			this.childrenStars.forEach(childStar => childStar.show());
 		});
-	}
+	}*/
 	
-	hide(callback) {
+	/*hide(callback) {
 		this.tweenVisibility(false, () => {
 		  // Remove itself from the parent's children list
 			for (let i = 0; i < this.parent.childrenStars.length; i++) {
@@ -141,9 +151,30 @@ class ChildStar extends Star {
 			}
 			this.removeFromScene();
 		});
+	}*/
+	
+	scatter() {
+	  const scatterTween = new TWEEN.Tween(this.sprite.position)
+	    .to(this.position, 600)
+	    .easing(TWEEN.Easing.Sinusoidal.Out)
+	    .start();
+	}
+	
+	showLineTween() {
+	  const lineTween = new TWEEN.Tween(this.line.geometry.vertices[1])
+	    .to(this.lineEnd, 300)
+	    .onUpdate(() => {
+	      this.line.geometry.verticesNeedUpdate = true;
+	      this.line.computeLineDistances();
+	      this.line.geometry.lineDistancesNeedUpdate = true;
+	    })
+	    .onComplete(() => {
+	      this.childrenStars.forEach(childStar => childStar.showLineTween());
+	    })
+	    .start();
 	}
 
-  tweenVisibility(isShowing, callback) {
+  /*tweenVisibility(isShowing, callback) {
     const lineTween = new TWEEN.Tween(this.line.geometry.vertices[1])
 			.to(isShowing ? this.lineEnd : this.line.geometry.vertices[0], isShowing ? 300 : 150)
 			.onUpdate(() => {
@@ -162,7 +193,7 @@ class ChildStar extends Star {
 		  secondTween.start();
 		  callback();
 		}).start();
-  }
+  }*/
   
   hover() {
     console.log('hover');

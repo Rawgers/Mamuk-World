@@ -143,10 +143,17 @@ class EditView extends View {
   }
   
   createMamukaSprite() {
-    const sprite = new THREE.Sprite(new THREE.SpriteMaterial(
-      {map: new THREE.TextureLoader().load(this.mamuka.image)}
-    ));
-    sprite.scale.set(MAMUKA_SPRITE_RADIUS * 2, MAMUKA_SPRITE_RADIUS * 2, 0);
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: new THREE.TextureLoader().load(
+        this.mamuka.image,
+        texture => {
+          const factor = EDIT_MAMUKA_SPRITE_RADIUS / new THREE.Vector2(texture.image.width / 2, texture.image.height / 2).length();
+          console.log(factor);
+          sprite.scale.set(texture.image.width * factor, texture.image.height * factor, 0);
+        }
+      )
+    }));
+    //sprite.scale.set(EDIT_MAMUKA_SPRITE_RADIUS * 2, EDIT_MAMUKA_SPRITE_RADIUS * 2, 0);
     this.scene.add(sprite);
     return sprite;
   }

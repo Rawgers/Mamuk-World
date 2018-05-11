@@ -36,7 +36,7 @@ const ZOOM_IN_DURATION = 800;
 const ZOOM_OUT_DURATION = 500;
 
 // Constellation & Stars
-const MAMUKA_SPRITE_RADIUS = 4;
+const EDIT_MAMUKA_SPRITE_RADIUS = 6;
 const CONSTELLATION_COLOR = {
   like: 0xffd3d3,
   dislike: 0xfffbb7,
