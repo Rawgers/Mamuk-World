@@ -1,15 +1,13 @@
 class View {
   constructor(scene, camera, cameraControlsClass) {
-    if (!View.renderer) {
-      console.log('Set the renderer before creating any View object!');
-    }
     this.scene = scene;
     this.camera = camera;
-    this.renderFunction = () => {};
+    this.renderFunction; // Do not call renderer.render and cameraControls.update()
 
+    this.clock = new THREE.Clock();
     this.cameraControls;
     this.cameraControlsClass = cameraControlsClass;
-    this.clock = new THREE.Clock();
+    this.isCameraControlsActive = true;
 
     this.raycaster = new THREE.Raycaster();
     this.raymouse = new THREE.Vector2();
@@ -24,12 +22,12 @@ class View {
   start() {
     View.currentView && View.currentView.stop();
 
-    this.setCameraControls();
+    this.setCameraControls(this.isCameraControlsActive);
     this.setEventListeners(this.eventListeners);
     const animate = () => {
       this.requestAnimationFrameId = requestAnimationFrame(animate);
       this.cameraControls && this.cameraControls.update(this.clock.getDelta());
-      this.renderFunction(); // Do not call renderer.render and cameraControls.update()
+      this.renderFunction && this.renderFunction();
       View.renderer.render(this.scene, this.camera);
     };
     animate();
@@ -42,15 +40,18 @@ class View {
     this.requestAnimationFrameId && cancelAnimationFrame(this.requestAnimationFrameId);
     this.requestAnimationFrameId = null;
     this.eventListeners.forEach(eventListener => {
-      View.renderer.domElement.removeEventListener(eventListener.type, eventListener.function);
+      eventListener.target.removeEventListener(
+        eventListener.type,
+        eventListener.listener
+      );
     });
     View.currentView = null;
   }
 
-  setCameraControls() {
+  setCameraControls(isActive) {
     if (this.cameraControlsClass) {
       this.cameraControls = new this.cameraControlsClass(this.camera);
-      this.toggleCameraControls(true);
+      this.toggleCameraControls(isActive);
     }
   }
 
@@ -61,6 +62,7 @@ class View {
       this.cameraControls.rollSpeed = toBeActive
         ? DEFAULT_ROLL_SPEED : 0;
     }
+    this.isCameraControlsActive = toBeActive;
   }
 
   toggleRaycaster(toBeActive) { // perhaps delete this method
@@ -73,18 +75,17 @@ class View {
   }
 
   setEventListeners(eventListeners) {
-    // listeners: [{type: 'mousedown', listener: function}, ...]
     eventListeners.forEach(eventListener => {
       this.eventListeners.push(eventListener);
       eventListener.target.addEventListener(
         eventListener.type,
-        event => eventListener.listener(event)
+        eventListener.listener
       );
     });
   }
 }
 
 View.currentView = null;
-View.renderer = new THREE.WebGLRenderer({antialias: true});
+View.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
 View.renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(View.renderer.domElement);

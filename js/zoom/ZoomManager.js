@@ -72,6 +72,7 @@ class ZoomManager {
 
     // Camera animation setup
     const normalCamNear = {near: this.camera.near}
+    
     // Tweening
     this.ongoingTween.forEach(tween => tween.stop());
     this.ongoingTween = [rotationTween, positionTween, fogTween];
@@ -79,10 +80,9 @@ class ZoomManager {
       rotationTween.start();
       fogTween.start();
       this.toggleOnStart();
-
-    }).start().onComplete(() => {
+    }).onComplete(() => {
       this.toggleOnComplete();
-    });
+    }).start();
   }
 
   calculateViewScalar(viewObject) {

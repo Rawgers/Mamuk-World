@@ -2,10 +2,17 @@
   box-sizing: border-box;
 }
 
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
 body {
   overflow: hidden;
-  background-color: 0x050e10;
+  background-color: #050e10; /* Same as the scene background */
 }
+
 canvas {
   width: 100%;
   height: 100%;

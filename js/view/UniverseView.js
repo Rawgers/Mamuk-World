@@ -99,12 +99,12 @@ class UniverseView extends View {
     };
 
     return [
-      {target: View.renderer.domElement, type: 'mousemove', listener: raymouseListener},
-      {target: View.renderer.domElement, type: 'wheel', listener: wheelListener},
-      {target: View.renderer.domElement, type: 'mousedown', listener: spriteZoomListener},
       {target: window, type: 'resize', listener: resizeListener},
       {target: View.renderer.domElement, type: 'mouseleave', listener: mouseLeaveListener},
-      {target: View.renderer.domElement, type: 'mouseenter', listener: mouseEnterListener}
+      {target: View.renderer.domElement, type: 'mouseenter', listener: mouseEnterListener},
+      {target: View.renderer.domElement, type: 'mousemove', listener: raymouseListener},
+      {target: View.renderer.domElement, type: 'wheel', listener: wheelListener},
+      {target: View.renderer.domElement, type: 'mousedown', listener: spriteZoomListener}
     ];
   }
 }

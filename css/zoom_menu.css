@@ -3,7 +3,7 @@ p {
 }
 
 #button-container {
-  display: none;
+  display: none; /* toggled to block */
   position: absolute;
   top: 4vh;
   right: 4vw;
@@ -12,40 +12,133 @@ p {
 
 #button-container > i {
   display: block;
+  padding: 16px;
   font-size: 2.5rem;
   color: white;
-  padding: 16px;
   cursor: pointer;
 }
 
 #chat-container {
+  display: none; /* toggled to block */
   position: absolute;
-  display: none;
-  width: 72vw;
   left: 0;
   right: 0;
   bottom: 4vh;
+  width: 72vw;
   margin: auto;
-  padding: 2vh 4vw;
-  border-radius: 4vh; /* Some big number */
   font-family: 'Hi Melody', cursive;
-  word-wrap: break-word;
   font-size: 3rem;
+  word-wrap: break-word;
   color: white;
-  background-color: rgba(100, 100, 100, 0.7);
-  box-shadow: 0 0 2vw white;
 }
 
 #chat-hidden-text {
   visibility: hidden;
 }
 
-#world-container {
+#edit-container {
+  display: none; /* toggled to block */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+/*#focused-star {
+  position: absolute;
+  width: 30vw;
+  height: 30vw;
+  transform: scale(0);
+  background: url('/img/star.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: transform 0.2s ease-in-out;
+}*/
+
+#edit-speech-balloon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  bottom: 24vh;
+  max-width: 10rem;
+  padding: 0.5rem;
+  text-align: center;
+  border-radius: 0.2rem;
+  background-color: white;
+  z-index: 100;
+}
+
+#edit-speech-balloon:before {
+	content: "";
+	position: absolute;
+	bottom: -2rem;
+	left: 50%;
+ 	margin-left: -1rem;
+	border: 1rem solid transparent;
+	border-top: 1.4rem solid white;
+}
+
+#edit-profile-button-container {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 32vh;
+  margin: auto;
+  visibility: hidden;
+}
+
+#edit-profile-button-container > * {
+  padding: 0 2rem;
+  font-size: 2rem;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#like-button {
+  color: #ffd3d3;
+}
+#dislike-button {
+  color: #fffbb7;
+}
+#wish-button {
+  color: #d3e2ff;
+}
+
+#edit-input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2vh;
+  margin: auto;
+  /*width: 100vw;
+  height: 20vh;*/
+  font-family: 'Hi Melody', cursive;
+  font-size: 1.6rem;
+  color: white;
+}
+
+#edit-input-container > input {
+  margin: 0 0.5rem;
+  pointer-events: auto;
+}
+
+#world-container {
+  display: none; /* toggled to flex */
   justify-content: center;
   align-content: flex-start;
   flex-wrap: wrap;
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   padding: 5vw;
@@ -70,7 +163,7 @@ p {
   border-radius: 50%;
 }
 
-#home-link-overlay{
+#home-link-overlay {
   display: none;
   position: absolute;
   width: 100vw;

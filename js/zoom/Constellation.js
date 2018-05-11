@@ -1,13 +1,17 @@
+/* global THREE */
+/* global RootStar */
+/* global ChildStar */
+
 class Constellation { // Constellation represented by tree data structure
   constructor(scene, mamuka, type) {
     this.scene = scene;
     this.type = type;
     this.color = CONSTELLATION_COLOR[this.type]
-    this.root = new RootStar(this.scene, mamuka);
-    this.allStars = [this.root];
+    this.rootStar = new RootStar(this.scene, mamuka);
+    this.allStars = [this.rootStar];
     this.layerThickness = 5;
-    this.createConstellation(this.defineLength(15), 0);
-    this.drawConstellation();
+    this.createConstellation(this.defineLength(30), 0);
+    this.draw();
   }
 
   createConstellation(allTexts, layerIndex) {
@@ -16,11 +20,11 @@ class Constellation { // Constellation represented by tree data structure
     }
     const remainingText = allTexts;
     const starCount = 3 + layerIndex * 6;
-    const layerInnerRadius = (this.root.radius * 1.4) + (this.layerThickness * layerIndex);
+    const layerInnerRadius = EDIT_MAMUKA_SPRITE_RADIUS * 1.4 + (this.layerThickness * layerIndex);
     const layerSectionAngle = (Math.PI * 2) / starCount;
     for (let i = 0; allTexts.length > 0 && i < starCount; i++) {
       const starPosition = this.randomizeStarPosition(i, layerInnerRadius, layerSectionAngle);
-      const star = new ChildStar(this.scene, allTexts[0], starPosition, this.color, this.root, this.allStars);
+      const star = new ChildStar(this.scene, allTexts[0], starPosition, this.color, this.rootStar, this.allStars);
       star.addToScene(this.allStars);
       this.allStars.push(star);
       remainingText.splice(0, 1);
@@ -28,14 +32,28 @@ class Constellation { // Constellation represented by tree data structure
     this.createConstellation(remainingText, ++layerIndex);
     // The 0th index is the layer whose stars connect to the mamuka.
   }
-
-  drawConstellation() {
-    this.root.showStar();
-  }
-
-  closeConstellation() {
-    this.root.hideStar();
-  }
+  
+  draw() {
+		this.rootStar.show();
+	}
+	
+	close(callback) {
+		const starsToFade = this.allStars.filter(star => star instanceof ChildStar);
+		const intermediateOpacity = {opacity: 1};
+		const fadeOutTween = new TWEEN.Tween(intermediateOpacity)
+		  .to({opacity: 0}, 300)
+		  .onUpdate(() => {
+		    starsToFade.forEach(star => {
+		      star.sprite.material.opacity = intermediateOpacity.opacity;
+		      star.line.material.opacity = intermediateOpacity.opacity;
+		    });
+		  })
+		  .onComplete(() => {
+		    starsToFade.forEach(star => star.removeFromScene());
+		    callback();
+		  })
+		  .start();
+	}
 
   defineLength(n) {
     const textList = [];
@@ -75,7 +93,7 @@ class Constellation { // Constellation represented by tree data structure
   }
 
   addNewStar(text, position) {
-    const newStar = new ChildStar(this.scene, text, position, this.color, this.root, this.allStars);
+    const newStar = new ChildStar(this.scene, text, position, this.color, this.rootStar, this.allStars);
     this.allStars.push(newStar);
   }
 
