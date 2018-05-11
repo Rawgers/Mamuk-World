@@ -40,19 +40,9 @@ class RootStar extends Star {
     this.position = new THREE.Vector3();
   }
   
-  /*show() {
+  show() {
 		this.childrenStars.forEach(childStar => childStar.show());
-	}*/
-	
-	scatter() {
-	  setTimeout(() => {
-	    this.childrenStars.forEach(childStar => childStar.showLineTween());
-	  }, 600);
 	}
-	
-	/*hide(callback) {
-		callback && callback();
-	}*/
 }
 
 class ChildStar extends Star {
@@ -79,10 +69,9 @@ class ChildStar extends Star {
     this.sprite = new THREE.Sprite(
       new THREE.SpriteMaterial({map: ChildStar.texture, color: 0xffffff/*this.color*/})
     );
-    //this.sprite.position.set(this.position.x, this.position.y, this.position.z);
-    this.sprite.position.set(0, 0, 0);
+    this.sprite.position.set(this.position.x, this.position.y, this.position.z);
     this.sprite.scale.set(2.5, 2.5, 0);
-    //this.sprite.material.opacity = 0;
+    this.sprite.material.opacity = 0;
     this.sprite.material.transparent = true;
     this.scene.add(this.sprite);
   }
@@ -123,77 +112,34 @@ class ChildStar extends Star {
     const lineGeometry = new THREE.Geometry();
     lineGeometry.vertices.push(correctedStart.clone(), correctedStart.clone());
     // Tween lineGeometry.vertices[1] to this.lineEnd later
-    this.line = new THREE.Line(
-      lineGeometry,
-      new THREE.LineDashedMaterial({color: this.color, dashSize: 0.3, gapSize: 0.2})
-    )
-    this.line.computeLineDistances();
+    this.line = new THREE.Line(lineGeometry,
+      new THREE.LineBasicMaterial({color: this.color})
+    );
     this.line.material.transparent = true;
     this.scene.add(this.line);
   }
   
-  /*show() {
-		this.tweenVisibility(true, () => {
-			this.childrenStars.forEach(childStar => childStar.show());
-		});
-	}*/
-	
-	/*hide(callback) {
-		this.tweenVisibility(false, () => {
-		  // Remove itself from the parent's children list
-			for (let i = 0; i < this.parent.childrenStars.length; i++) {
-			  if (this.parent.childrenStars[i] === this) {
-			    this.parent.childrenStars.splice(i, 1);
-			  }
-			}
-			if (this.parent.isLeaf()) {
-				this.parent.hide(callback);
-			}
-			this.removeFromScene();
-		});
-	}*/
-	
-	scatter() {
-	  const scatterTween = new TWEEN.Tween(this.sprite.position)
-	    .to(this.position, 600)
-	    .easing(TWEEN.Easing.Sinusoidal.Out)
-	    .start();
-	}
-	
-	showLineTween() {
-	  const lineTween = new TWEEN.Tween(this.line.geometry.vertices[1])
-	    .to(this.lineEnd, 300)
-	    .onUpdate(() => {
-	      this.line.geometry.verticesNeedUpdate = true;
-	      this.line.computeLineDistances();
-	      this.line.geometry.lineDistancesNeedUpdate = true;
-	    })
-	    .onComplete(() => {
-	      this.childrenStars.forEach(childStar => childStar.showLineTween());
-	    })
-	    .start();
-	}
-
-  /*tweenVisibility(isShowing, callback) {
-    const lineTween = new TWEEN.Tween(this.line.geometry.vertices[1])
-			.to(isShowing ? this.lineEnd : this.line.geometry.vertices[0], isShowing ? 300 : 150)
-			.onUpdate(() => {
-				this.line.geometry.verticesNeedUpdate = true;
-			});
-		const intermediateOpacity = {opacity: this.sprite.material.opacity};
+  show() {
+    // Tween the opacity of the sprite
+    const intermediateOpacity = {opacity: this.sprite.material.opacity};
 		const opacityTween = new TWEEN.Tween(intermediateOpacity)
-			.to({opacity: isShowing ? 1 : 0}, isShowing ? 100 : 50)
+			.to({opacity: 1}, 300)
 			.onUpdate(() => {
 				this.sprite.material.opacity = intermediateOpacity.opacity;
 			});
-		
-		const firstTween = isShowing ? lineTween : opacityTween;
-		const secondTween = isShowing ? opacityTween : lineTween;
-		firstTween.onComplete(() => {
-		  secondTween.start();
-		  callback();
-		}).start();
-  }*/
+    
+		// Tween the line
+    new TWEEN.Tween(this.line.geometry.vertices[1])
+			.to(this.lineEnd, 300)
+			.onUpdate(() => {
+				this.line.geometry.verticesNeedUpdate = true;
+			})
+			.onComplete(() => {
+			  opacityTween.start();
+			  this.childrenStars.forEach(childStar => childStar.show());
+			})
+			.start();
+	}
   
   hover() {
     console.log('hover');

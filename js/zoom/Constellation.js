@@ -34,14 +34,10 @@ class Constellation { // Constellation represented by tree data structure
   }
   
   draw() {
-		//this.rootStar.show();
-		this.allStars.forEach(star => star.scatter());
+		this.rootStar.show();
 	}
 	
 	close(callback) {
-		// Collect the leaves
-		/*const leaves = this.allStars.filter(star => star.isLeaf());
-		leaves.forEach(leaf => leaf.hide(callback));*/
 		const starsToFade = this.allStars.filter(star => star instanceof ChildStar);
 		const intermediateOpacity = {opacity: 1};
 		const fadeOutTween = new TWEEN.Tween(intermediateOpacity)
