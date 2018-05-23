@@ -11,7 +11,7 @@ const data = {
   mamuka: [
     {
       id: 'gaebul',
-      image: 'assets/mamuk_assets/gaebul.png',
+      image: require('../../../assets/mamuk_assets/gaebul.png'),
       name: 'Gaebul',
       like: ['anything delicious'],
       dislike: ['indecisiveness'],
@@ -19,7 +19,7 @@ const data = {
     },
     {
       id: 'bett',
-      image: 'assets/mamuk_assets/bett.png',
+      image: require('../../../assets/mamuk_assets/bett.png'),
       name: 'Bett',
       like: ['gentle rain', 'friends', 'seeing people enjoying themselves'],
       dislike: ['feeling down', 'being ill'],
@@ -27,7 +27,7 @@ const data = {
     },
     {
       id: 'joy',
-      image: 'assets/mamuk_assets/joy.png',
+      image: require('../../../assets/mamuk_assets/joy.png'),
       name: 'Joy',
       like: ['sleeping'],
       dislike: ['singing'],
@@ -35,7 +35,7 @@ const data = {
     },
     {
       id: 'dilly_doot',
-      image: 'assets/mamuk_assets/dilly_doot.png',
+      image: require('../../../assets/mamuk_assets/dilly_doot.png'),
       name: 'Dilly Doot',
       like: ['sandwich', 'warm weather', 'peace', 'yellow'],
       dislike: ['noisy evenings'],
@@ -45,47 +45,47 @@ const data = {
   mumu: [
     {
       id: 'mumu00',
-      image: './assets/mamuk_assets/mumu0.png',
+      image: require('../../../assets/mamuk_assets/mumu0.png'),
       name: ''
     },
     {
       id: 'mumu01',
-      image: './assets/mamuk_assets/mumu1.png',
+      image: require('../../../assets/mamuk_assets/mumu1.png'),
       name: ''
     },
     {
       id: 'mumu02',
-      image: './assets/mamuk_assets/mumu2.png',
+      image: require('../../../assets/mamuk_assets/mumu2.png'),
       name: ''
     },
     {
       id: 'mumu03',
-      image: './assets/mamuk_assets/mumu3.png',
+      image: require('../../../assets/mamuk_assets/mumu3.png'),
       name: ''
     },
     {
       id: 'mumu04',
-      image: './assets/mamuk_assets/mumu4.png',
+      image: require('../../../assets/mamuk_assets/mumu4.png'),
       name: ''
     },
     {
       id: 'mumu05',
-      image: './assets/mamuk_assets/mumu5.png',
+      image: require('../../../assets/mamuk_assets/mumu5.png'),
       name: ''
     },
     {
       id: 'mumu06',
-      image: './assets/mamuk_assets/mumu6.png',
+      image: require('../../../assets/mamuk_assets/mumu6.png'),
       name: ''
     },
     {
       id: 'mumu07',
-      image: './assets/mamuk_assets/mumu7.png',
+      image: require('../../../assets/mamuk_assets/mumu7.png'),
       name: ''
     },
     {
       id: 'mumu08',
-      image: './assets/mamuk_assets/mumu8.png',
+      image: require('../../../assets/mamuk_assets/mumu8.png'),
       name: ''
     }
   ]

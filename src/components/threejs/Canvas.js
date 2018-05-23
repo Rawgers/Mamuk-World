@@ -15,7 +15,7 @@ export default class Canvas extends Component {
     this.currentView = new UniverseView(
       this.renderer,
       new THREE.Scene(),
-      new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, DEFAULT_NEAR, DEFAULT_FAR),
+      new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, DEFAULT_NEAR, DEFAULT_FAR),
       ModifiedFlyControls
     );
   }
