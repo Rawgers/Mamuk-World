@@ -27,7 +27,7 @@ export default class UniverseView extends View {
     this.raycaster.near =  DEFAULT_NEAR;
     this.raycaster.far = DEFAULT_FAR;
 
-      //initialize far from camera to spawn on start
+    //initialize far from camera to spawn on start
     const initialSphereCenter = new THREE.Vector3().addVectors(
       this.camera.position, new THREE.Vector3(1000, 1000, 1000)
     );
