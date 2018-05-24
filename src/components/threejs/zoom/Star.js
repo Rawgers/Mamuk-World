@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as TWEEN from 'es6-tween';
+import * as TWEEN from '@tweenjs/tween.js';
 
 import {EDIT_MAMUKA_SPRITE_RADIUS} from '../constants';
 

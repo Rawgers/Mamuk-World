@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as TWEEN from 'es6-tween';
+import * as TWEEN from '@tweenjs/tween.js';
 import * as $ from 'jquery';
 
 import View from '../view/View';
